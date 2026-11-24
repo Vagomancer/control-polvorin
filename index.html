@@ -237,6 +237,50 @@ details.nivel>summary::-webkit-details-marker{display:none}
 .c-ficha dt{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
 .c-ficha dd{margin:2px 0 0;font-size:14px}
 @media (max-width:700px){.c-cab{grid-template-columns:80px minmax(0,1fr)}.c-chips{display:none}}
+
+/* facilidad de uso */
+body{font-size:15px}
+.tit-mod{margin:4px 0 12px}.tit-mod h2{font-size:22px}.tit-mod h2::before{display:none}.tit-mod .nota{font-size:14px;margin:2px 0 0}
+.panel-f{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:14px}
+.f-top{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end}
+.f-top>label{display:flex;flex-direction:column;gap:3px;font-size:12px;font-weight:600;color:var(--muted);flex:1 1 200px;max-width:340px}
+.f-top>label input{min-height:42px;border:1px solid var(--line);border-radius:9px;padding:6px 12px;background:var(--panel);color:var(--fg);width:100%;font-size:15px}
+.rapidos{display:flex;flex-wrap:wrap;gap:6px}
+.rapidos button{min-height:42px;padding:6px 15px;border:1px solid var(--line);border-radius:9px;background:var(--panel);font-weight:600;cursor:pointer}
+.rapidos button:hover{border-color:var(--accent)}
+.rapidos button[aria-pressed=true]{background:var(--fg);border-color:var(--fg);color:var(--panel)}
+.mas-f>summary{min-height:42px;display:flex;align-items:center;cursor:pointer;font-weight:600;color:var(--info);list-style:none;padding:0 6px}
+.mas-f>summary::after{content:" ▾";white-space:pre}.mas-f[open]>summary::after{content:" ▴"}
+.mas-f[open]{flex-basis:100%}.mas-f .filtros{margin:6px 0 0}
+.filtros input,.filtros select{min-height:42px}
+.chips-f{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+.chip-f{border:1px solid var(--info);background:var(--info-soft);color:var(--fg);border-radius:999px;padding:5px 12px;cursor:pointer;font-size:13px;min-height:32px}
+button.barra{border:0;background:none;width:100%;text-align:left;padding:4px 6px;margin:-4px -6px;border-radius:8px;cursor:pointer}
+button.barra:hover{background:var(--panel2)}
+.ver-col{margin-bottom:10px}
+.subtabs button{min-height:42px}
+.tu0{background:#8a94a3}
+.inicio{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:16px}
+.ini{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;cursor:pointer;display:flex;flex-direction:column;gap:12px}
+.ini:hover{border-color:var(--accent)}
+.ini-cab{display:flex;gap:10px;align-items:center;font-size:17px;font-weight:700}.ini-cab svg{width:24px;height:24px;color:var(--accent)}
+.ini-d{display:flex;flex-direction:column}.ini-d b{font-size:30px;line-height:1.1}.ini-d small{font-size:15px;color:var(--muted);font-weight:600}
+.ini-ir{margin-top:auto;color:var(--info);font-weight:600}
+@media (max-width:700px){
+  nav.tabs{position:fixed;inset:auto 0 0 0;margin:0;width:100%;max-width:none;border-radius:0;border-top:1px solid var(--line);padding:4px;gap:0;z-index:30}
+  nav.tabs button{flex:1 0 auto;flex-direction:column;gap:2px;font-size:11px;padding:7px 8px;min-height:52px}
+  nav.tabs button{position:relative}nav.tabs .cuenta{position:absolute;top:2px;right:2px;font-size:10px;padding:0 5px}
+  header.top{padding-bottom:16px}main{padding-bottom:96px}
+  .rapidos{width:100%}.rapidos button{flex:1 1 auto;padding:6px 10px}
+  .f-top>label{max-width:none;flex-basis:100%}
+  .filtros label,.filtros select,.filtros input,.filtros input[type=search]{width:100%;max-width:none}
+  .tarjetas-movil{border:0;max-height:none}
+  .tarjetas-movil table,.tarjetas-movil tbody,.tarjetas-movil tr,.tarjetas-movil td{display:block;width:100%}
+  .tarjetas-movil thead{display:none}
+  .tarjetas-movil tr{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;padding:6px 12px}
+  .tarjetas-movil td{display:flex;justify-content:space-between;gap:14px;border:0;padding:5px 0;background:none!important;text-align:right;white-space:normal}
+  .tarjetas-movil td::before{content:attr(data-t);color:var(--muted);font-size:12.5px;text-align:left}
+}
 [hidden]{display:none!important}
 @media (max-width:640px){header.top{padding:14px 16px 58px}h1{font-size:18px}.barra{grid-template-columns:1fr auto}.barra .pista{grid-column:1/-1;grid-row:2}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -359,6 +403,7 @@ const CAMPOS = {
 };
 /* listas que necesita cada módulo */
 const REQ = {
+  inicio: ['extracciones', 'desarrollos', 'volteos', 'centroCostos', 'personal', 'cartilla', 'catalogo', 'inventario', 'movimientos', 'vales'],
   produccion: ['extracciones', 'volteos', 'centroCostos', 'personal', 'cartilla'],
   desarrollos: ['desarrollos', 'volteos', 'centroCostos', 'personal', 'cartilla'],
   personal: ['personal'],
@@ -377,7 +422,7 @@ function el(tag, attrs, ...hijos) {
     const v = attrs[k];
     if (v === undefined || v === null || v === false) continue;
     if (k === 'class') e.className = v;
-    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else if (k.startsWith('on') && typeof v === 'function') e.addEventListener(k.slice(2), v);
     else if (k in e && k !== 'list') e[k] = v;
     else e.setAttribute(k, v);
   }
@@ -409,6 +454,7 @@ const ICONOS = {
   produccion: '<path d="M3 17h18"/><path d="M5 17l2-6h10l2 6"/><circle cx="8" cy="19" r="1.5"/><circle cx="16" cy="19" r="1.5"/><path d="M9 11l1-4h4l1 4"/>',
   desarrollos: '<path d="M3 20h18"/><path d="M5 20V10a7 7 0 0 1 14 0v10"/><path d="M12 13v7"/>',
   personal: '<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.5A5 5 0 0 1 21 19"/>',
+  inicio: '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
   consultas: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/><path d="M8 11h6"/>'
 };
 function icono(n) { const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '2'); s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round'); s.setAttribute('aria-hidden', 'true'); s.innerHTML = ICONOS[n] || ''; return s; }
@@ -446,7 +492,7 @@ function barras(filas, vacio) {
   const max = Math.max(...filas.map((f) => f.tope ?? f.partes.reduce((s, p) => s + p[0], 0)), 1);
   return el('div', {class: 'barras'}, filas.map((f) => {
     const tope = f.tope ?? max;
-    return el('div', {class: 'barra', title: f.ayuda || ''}, el('span', {class: 'lb'}, f.lb),
+    return el(f.ir ? 'button' : 'div', {class: 'barra' + (f.ir ? ' toca' : ''), type: f.ir ? 'button' : null, title: f.ir ? 'Tocar para filtrar' : f.ayuda || '', onclick: f.ir || null}, el('span', {class: 'lb'}, f.lb),
       el('span', {class: 'pista'}, f.partes.map(([v, c]) => el('i', {class: c, style: `width:${Math.max(0, Math.min(100, v / tope * 100))}%`}))),
       el('span', {class: 'vl'}, f.texto));
   }));
@@ -598,13 +644,16 @@ function construir(raw) {
 function tabla(columnas, filas, opciones = {}) {
   const lote = opciones.lote || 200;
   let orden = opciones.orden || null, dir = opciones.dir || 1, visibles = lote;
-  const cont = el('div');
+  const cont = el('div'), todasCol = columnas, hayExtra = columnas.some((c) => c.x);
+  let completas = false;
   const pintar = () => {
     cont.replaceChildren();
+    const columnas = completas ? todasCol : todasCol.filter((c) => !c.x);
+    if (hayExtra && filas.length) cont.append(el('button', {class: 'btn ver-col', type: 'button', 'aria-pressed': String(completas), onclick: () => { completas = !completas; pintar(); }}, completas ? 'Ver menos columnas' : 'Ver todas las columnas'));
     if (!filas.length) { cont.append(el('div', {class: 'tw'}, el('div', {class: 'vacio'}, opciones.vacio || 'No hay registros con estos filtros.'))); return; }
     let datos = filas;
     if (orden) {
-      const col = columnas.find((c) => c.k === orden);
+      const col = todasCol.find((c) => c.k === orden);
       const val = col.ord || ((f) => f[col.k]);
       datos = filas.slice().sort((a, b) => {
         const x = val(a), y = val(b);
@@ -617,9 +666,9 @@ function tabla(columnas, filas, opciones = {}) {
     const cab = el('tr', null, columnas.map((c) => el('th', {class: 'ord' + (c.num ? ' n' : ''), scope: 'col', 'aria-sort': orden === c.k ? (dir > 0 ? 'ascending' : 'descending') : 'none', onclick: () => { if (orden === c.k) dir = -dir; else { orden = c.k; dir = c.num ? -1 : 1; } visibles = lote; pintar(); }}, c.t + (orden === c.k ? (dir > 0 ? ' ▲' : ' ▼') : ''))));
     const cuerpo = datos.slice(0, visibles).map((f) => el('tr', null, columnas.map((c) => {
       const v = c.ver ? c.ver(f) : f[c.k];
-      return el('td', {class: (c.num ? 'n ' : '') + (c.nw ? 'nw' : '')}, v === null || v === undefined || v === '' ? '—' : v);
+      return el('td', {class: (c.num ? 'n ' : '') + (c.nw ? 'nw' : ''), 'data-t': c.t}, v === null || v === undefined || v === '' ? '—' : v);
     })));
-    cont.append(el('div', {class: 'tw'}, el('table', null, el('thead', null, cab), el('tbody', null, cuerpo))));
+    cont.append(el('div', {class: 'tw tarjetas-movil', tabIndex: 0}, el('table', null, el('thead', null, cab), el('tbody', null, cuerpo))));
     if (datos.length > visibles) cont.append(el('button', {class: 'btn mas', type: 'button', onclick: () => { visibles += lote; pintar(); }}, `Mostrar más (${num(datos.length - visibles)} restantes)`));
   };
   pintar();
@@ -662,9 +711,9 @@ const abiertos = new Set();
 function totalAlertas() { return Object.values(M.controles).filter((lista) => lista.length > 0).length; }
 /* módulos: cada uno lee solo sus listas y las guarda en D */
 const D = {}, LEIDO = {};
-let MD = null, ME = null, modulo = 'produccion';
+let MD = null, ME = null, modulo = 'inicio';
 try { const m = localStorage.getItem('rm-modulo'); if (m && REQ[m]) modulo = m; } catch (e) {}
-const MODULOS = [['produccion', 'Producción', 'produccion'], ['desarrollos', 'Desarrollos', 'desarrollos'], ['personal', 'Personal', 'personal'], ['polvorin', 'Polvorín', 'inventario'], ['consultas', 'Contratos y centros de costo', 'consultas']];
+const MODULOS = [['inicio', 'Inicio', 'inicio'], ['produccion', 'Producción', 'produccion'], ['desarrollos', 'Desarrollos', 'desarrollos'], ['personal', 'Personal', 'personal'], ['polvorin', 'Polvorín', 'inventario'], ['consultas', 'Consultas', 'consultas']];
 function pintarTabs() {
   $('#tabs').replaceChildren(...MODULOS.map(([id, t, ic]) => el('button', {type: 'button', role: 'tab', 'aria-selected': String(modulo === id), onclick: () => irModulo(id)}, icono(ic), t,
     id === 'polvorin' && M && totalAlertas() ? el('span', {class: 'cuenta'}, totalAlertas()) : null)));
@@ -673,7 +722,7 @@ function pintarTabs() {
 function irModulo(id) {
   modulo = id; try { localStorage.setItem('rm-modulo', id); } catch (e) {}
   pintarTabs(); window.scrollTo(0, 0);
-  if (REQ[id].some((l) => !D[l])) cargar(); else { pintar(); marcarEstado(); }
+  if (REQ[id].some((l) => !D[l])) { if (cargando) pantalla('Cargando datos', 'Leyendo las listas de SharePoint de este módulo…', null, true); cargar(); } else { pintar(); marcarEstado(); }
 }
 function irA(id) { pestana = id; pintar(); window.scrollTo(0, 0); }
 function pintar() {
@@ -683,11 +732,13 @@ function pintar() {
     vista = el('div', null, subtabs(defs, pestana, irA), {inventario: vistaInventario, movimientos: vistaMovimientos, vales: vistaVales, control: vistaControl}[pestana]());
   } else if (modulo === 'consultas') {
     vista = el('div', null, subtabs([['cartilla', 'Cartilla de contratos'], ['cc', 'Centro de costos']], consulta, (id) => { consulta = id; pintar(); }), vistaConsultas());
-  } else vista = {produccion: vistaExtracciones, desarrollos: vistaDesarrollos, personal: vistaPersonal}[modulo]();
+  } else vista = {inicio: vistaInicio, produccion: vistaExtracciones, desarrollos: vistaDesarrollos, personal: vistaPersonal}[modulo]();
   $('#main').replaceChildren(vista);
 }
 function marcarEstado() {
-  const t = Math.min(...REQ[modulo].map((l) => LEIDO[l] || Date.now()));
+  const leidas = REQ[modulo].map((l) => LEIDO[l]).filter(Boolean);
+  if (!leidas.length) return;
+  const t = Math.min(...leidas);
   $('#estado').textContent = `Datos de SharePoint · actualizado ${new Date(t).toLocaleString('es-BO', {dateStyle: 'short', timeStyle: 'short'})}`;
 }
 
@@ -775,20 +826,21 @@ const COL_MOV = [
   {k: 'Material', t: 'Material'},
   {k: 'firmada', t: 'Cantidad', num: true, ver: (m) => el('span', {class: m.firmada > 0 ? 'pos' : m.firmada < 0 ? 'neg' : ''}, firmado(m.firmada))},
   {k: 'Unidad', t: 'Unidad'},
-  {k: 'SaldoAntes', t: 'Saldo antes', num: true, ver: (m) => num(m.SaldoAntes)},
+  {k: 'SaldoAntes', x: 1, t: 'Saldo antes', num: true, ver: (m) => num(m.SaldoAntes)},
   {k: 'SaldoDespues', t: 'Saldo después', num: true, ver: (m) => num(m.SaldoDespues)},
-  {k: 'Title', t: 'Referencia', nw: true},
-  {k: 'IdVale', t: 'ID vale', num: true, ver: (m) => m.IdVale ?? '—'},
+  {k: 'Title', x: 1, t: 'Referencia', nw: true},
+  {k: 'IdVale', x: 1, t: 'ID vale', num: true, ver: (m) => m.IdVale ?? '—'},
   {k: 'Turno', t: 'Turno'},
-  {k: 'Labor', t: 'Labor'},
+  {k: 'Labor', x: 1, t: 'Labor'},
   {k: 'Destinatario', t: 'Destinatario'},
-  {k: 'EntregadoPor', t: 'Entregado por'},
-  {k: 'Motivo', t: 'Motivo'},
-  {k: 'Factura', t: 'Factura'}
+  {k: 'EntregadoPor', x: 1, t: 'Entregado por'},
+  {k: 'Motivo', x: 1, t: 'Motivo'},
+  {k: 'Factura', x: 1, t: 'Factura'}
 ];
 function vistaMovimientos() {
   const caja = el('div', {class: 'tarjeta'});
   const res = el('div');
+  if (fMov.item && !M.inventario.some((i) => i.titulo === fMov.item)) fMov.item = '';
   const aplicar = () => {
     const q = norm(fMov.texto);
     const filas = M.movimientos.filter((m) => {
@@ -820,19 +872,21 @@ function vistaMovimientos() {
   const graf = el('div', {class: 'graficos'});
   const set = (k) => (v) => { fMov[k] = v; aplicar(); };
   const materiales = unicos(M.movimientos.filter((m) => !fMov.item || m.item === fMov.item).map((m) => m.Material));
-  caja.append(el('h2', null, 'Movimientos del polvorín'),
-    el('p', {class: 'nota'}, 'Cada ingreso, salida y ajuste registrado en la lista Movimientos Polvorín, del más reciente al más antiguo.'),
-    el('div', {class: 'filtros'},
-      campoFecha('Desde', fMov.desde, set('desde')), campoFecha('Hasta', fMov.hasta, set('hasta')),
-      campoSelect('Tipo', [['_ing', 'Todos los ingresos'], ['_sal', 'Todas las salidas'], ...TIPOS], fMov.tipo, set('tipo')),
-      campoSelect('Ítem', M.inventario.map((i) => i.titulo), fMov.item, (v) => { fMov.item = v; fMov.material = ''; pintar(); }),
-      campoSelect('Material', materiales, fMov.material, set('material')),
-      campoSelect('Turno', unicos(M.movimientos.map((m) => m.Turno)), fMov.turno, set('turno')),
-      campoBuscar('Buscar', fMov.texto, set('texto'), 'Referencia, labor, destinatario…'),
-      el('button', {class: 'btn', type: 'button', onclick: () => { fMov = inicialMov(); pintar(); }}, 'Limpiar')),
-    res);
+  const dM = (n) => fechaIso(new Date(Date.now() - n * 864e5).toISOString()), hoyM = hoyLocal();
+  const per = (a, b) => () => { fMov.desde = a; fMov.hasta = b; pintar(); }, es = (a, b) => fMov.desde === a && fMov.hasta === b;
+  const tipoTxt = (t) => (t === '_ing' ? 'Solo ingresos' : t === '_sal' ? 'Solo salidas' : t);
+  caja.append(el('h2', null, 'Registros'), res);
   aplicar();
-  return el('div', null, graf, caja);
+  return el('div', null, titulo('Movimientos del polvorín', 'Cada ingreso, salida y ajuste registrado.'),
+    panelFiltros('mov', {rapidos: [['Hoy', es(hoyM, hoyM), per(hoyM, hoyM)], ['7 días', es(dM(6), hoyM), per(dM(6), hoyM)], ['Este mes', es(primerDiaMes(), ''), per(primerDiaMes(), '')], ['Todo', es('', ''), per('', '')]],
+      buscar: campoBuscar('Buscar', fMov.texto, set('texto'), 'Referencia, labor…'),
+      mas: [campoFecha('Desde', fMov.desde, (v) => { fMov.desde = v; pintar(); }), campoFecha('Hasta', fMov.hasta, (v) => { fMov.hasta = v; pintar(); }),
+        campoSelect('Tipo', [['_ing', 'Todos los ingresos'], ['_sal', 'Todas las salidas'], ...TIPOS], fMov.tipo, (v) => { fMov.tipo = v; pintar(); }),
+        campoSelect('Ítem', M.inventario.map((i) => i.titulo), fMov.item, (v) => { fMov.item = v; fMov.material = ''; pintar(); }),
+        campoSelect('Material', materiales, fMov.material, (v) => { fMov.material = v; pintar(); }),
+        campoSelect('Turno', unicos(M.movimientos.map((m) => m.Turno)), fMov.turno, (v) => { fMov.turno = v; pintar(); })],
+      chips: chipsDe(fMov, [['desde', (v) => 'Desde ' + verFecha(v)], ['hasta', (v) => 'Hasta ' + verFecha(v)], ['tipo', tipoTxt], ['item', (v) => v], ['material', (v) => v], ['turno', (v) => 'Turno ' + v]], () => pintar()),
+      limpiar: () => { fMov = {...inicialMov(), desde: ''}; pintar(); }}), graf, caja);
 }
 
 /* ---- Vales ---- */
@@ -842,15 +896,15 @@ const COL_VAL = [
   {k: 'Turno', t: 'Turno'},
   {k: 'Estado', t: 'Estado', ver: (v) => etiquetaEstado(v.Estado), csv: (v) => v.Estado},
   {k: 'contratista', t: 'Contratista'},
-  {k: 'Destino', t: 'Destino'},
-  {k: 'Labor', t: 'Labor'},
+  {k: 'Destino', x: 1, t: 'Destino'},
+  {k: 'Labor', x: 1, t: 'Labor'},
   {k: 'Material', t: 'Material'},
   {k: 'Cantidad', t: 'Solicitado', num: true, ver: (v) => num(v.Cantidad)},
   {k: 'CantidadDespachada', t: 'Despachado', num: true, ver: (v) => num(v.CantidadDespachada)},
   {k: 'Unidad', t: 'Unidad'},
-  {k: 'fechaDesp', t: 'Fecha despacho', nw: true, ver: (v) => (v.fechaDesp ? verFecha(v.fechaDesp) : '—'), csv: (v) => (v.fechaDesp ? verFecha(v.fechaDesp) : '')},
+  {k: 'fechaDesp', x: 1, t: 'Fecha despacho', nw: true, ver: (v) => (v.fechaDesp ? verFecha(v.fechaDesp) : '—'), csv: (v) => (v.fechaDesp ? verFecha(v.fechaDesp) : '')},
   {k: 'tieneMov', t: 'Movimiento', ord: (v) => (v.despachado ? (v.tieneMov ? 1 : 0) : 2), ver: (v) => (!v.despachado ? '—' : v.tieneMov ? el('span', {class: 'tag t-ok'}, 'Registrado') : el('span', {class: 'tag t-bad'}, 'Falta')), csv: (v) => (!v.despachado ? '' : v.tieneMov ? 'Registrado' : 'Falta')},
-  {k: 'EncargadodeRegistro', t: 'Registró'}
+  {k: 'EncargadodeRegistro', x: 1, t: 'Registró'}
 ];
 function vistaVales() {
   const caja = el('div', {class: 'tarjeta'});
@@ -890,22 +944,17 @@ function vistaVales() {
   };
   const graf = el('div', {class: 'graficos'});
   const set = (k) => (v) => { fVal[k] = v; aplicar(); };
-  caja.append(el('h2', null, 'Vales de explosivos y aceros'),
-    el('p', {class: 'nota'}, 'Lo que solicita mina. Se abre mostrando lo pendiente de despacho; cambia «Estado» para ver el historial.'),
-    el('div', {class: 'filtros'},
-      campoSelect('Estado', unicos(M.vales.map((v) => v.Estado)), fVal.estado, set('estado')),
-      campoFecha('Desde', fVal.desde, set('desde')), campoFecha('Hasta', fVal.hasta, set('hasta')),
-      campoSelect('Turno', unicos(M.vales.map((v) => v.Turno)), fVal.turno, set('turno')),
-      campoSelect('Contratista', unicos(M.vales.map((v) => v.contratista)), fVal.contratista, set('contratista')),
-      campoSelect('Destino', unicos(M.vales.map((v) => v.Destino)), fVal.destino, set('destino')),
-      campoSelect('Labor', unicos(M.vales.map((v) => v.Labor)).map(String), fVal.labor, set('labor')),
-      campoSelect('Material', unicos(M.vales.map((v) => v.Material)), fVal.material, set('material')),
-      campoSelect('Movimiento', [['ok', 'Registrado'], ['falta', 'Falta']], fVal.movimiento, set('movimiento')),
-      campoBuscar('Buscar', fVal.texto, set('texto'), 'Vale, ítem, contratista…'),
-      el('button', {class: 'btn', type: 'button', onclick: () => { fVal = inicialVal(); pintar(); }}, 'Limpiar')),
-    res);
+  const est = (e, m) => () => { fVal.estado = e; fVal.movimiento = m; pintar(); }, esV = (e, m) => fVal.estado === e && fVal.movimiento === m;
+  const sel = (t, k, ops) => campoSelect(t, ops, fVal[k], (v) => { fVal[k] = v; pintar(); });
+  caja.append(el('h2', null, 'Registros'), res);
   aplicar();
-  return el('div', null, graf, caja);
+  return el('div', null, titulo('Vales de explosivos y aceros', 'Lo que solicita mina. Se abre mostrando lo pendiente de despacho.'),
+    panelFiltros('val', {rapidos: [['Pendientes', esV('Solicitado', ''), est('Solicitado', '')], ['Despachados', esV('Despachado', ''), est('Despachado', '')], ['Sin movimiento', esV('', 'falta'), est('', 'falta')], ['Todos', esV('', ''), est('', '')]],
+      buscar: campoBuscar('Buscar', fVal.texto, set('texto'), 'Vale, ítem, contratista…'),
+      mas: [sel('Estado', 'estado', unicos(M.vales.map((v) => v.Estado))), campoFecha('Desde', fVal.desde, (v) => { fVal.desde = v; pintar(); }), campoFecha('Hasta', fVal.hasta, (v) => { fVal.hasta = v; pintar(); }),
+        sel('Turno', 'turno', unicos(M.vales.map((v) => v.Turno))), sel('Contratista', 'contratista', unicos(M.vales.map((v) => v.contratista))), sel('Destino', 'destino', unicos(M.vales.map((v) => v.Destino))), sel('Labor', 'labor', unicos(M.vales.map((v) => v.Labor)).map(String)), sel('Material', 'material', unicos(M.vales.map((v) => v.Material))), sel('Movimiento', 'movimiento', [['ok', 'Registrado'], ['falta', 'Falta']])],
+      chips: chipsDe(fVal, [['estado', (v) => v], ['desde', (v) => 'Desde ' + verFecha(v)], ['hasta', (v) => 'Hasta ' + verFecha(v)], ['turno', (v) => 'Turno ' + v], ['contratista', (v) => v], ['destino', (v) => v], ['labor', (v) => 'Labor ' + v], ['material', (v) => v], ['movimiento', (v) => (v === 'falta' ? 'Sin movimiento' : 'Con movimiento')]], () => pintar()),
+      limpiar: () => { fVal = {...inicialVal(), estado: ''}; pintar(); }}), graf, caja);
 }
 
 /* ---- Control ---- */
@@ -989,6 +1038,25 @@ function construirExtracciones() {
 function subtabs(defs, actual, ir) {
   return el('div', {class: 'subtabs', role: 'tablist'}, defs.map(([id, t, n]) => el('button', {type: 'button', role: 'tab', 'aria-selected': String(actual === id), onclick: () => ir(id)}, t, n ? el('span', {class: 'cuenta'}, n) : null)));
 }
+const mesAntes = (m) => { const [a, n] = m.split('-').map(Number); return n === 1 ? (a - 1) + '-12' : a + '-' + String(n - 1).padStart(2, '0'); };
+const masAbierto = {};
+function panelFiltros(id, o) {
+  const activos = o.chips.filter(([, v]) => v);
+  const d = el('details', {class: 'mas-f', open: !!masAbierto[id], ontoggle: (e) => { masAbierto[id] = e.target.open; }}, el('summary', null, 'Más filtros'), el('div', {class: 'filtros'}, o.mas));
+  return el('div', {class: 'panel-f'},
+    el('div', {class: 'f-top'}, el('div', {class: 'rapidos', role: 'group', 'aria-label': 'Filtros rápidos'}, o.rapidos.map(([t, on, f]) => el('button', {type: 'button', 'aria-pressed': String(on), onclick: f}, t))), o.buscar, o.mas.length ? d : null),
+    activos.length ? el('div', {class: 'chips-f'}, el('span', {class: 'sub'}, 'Estás viendo:'), activos.map(([t, , quitar]) => el('button', {type: 'button', class: 'chip-f', 'aria-label': 'Quitar filtro ' + t, onclick: quitar}, t, ' ✕')), el('button', {type: 'button', class: 'btn enlace', onclick: o.limpiar}, 'Quitar todo')) : null);
+}
+function rapidosMes(f, filas, set) {
+  const fechas = filas.map((r) => r.fecha).filter(Boolean).sort(), ult = fechas[fechas.length - 1] || '', mes = mesActual(), ant = mesAntes(mes);
+  const ir = (m, d) => () => { f.mes = m; f.dia = d; set(); };
+  return [['Último día', !!ult && f.dia === ult, ir(ult.slice(0, 7), ult)], ['Este mes', f.mes === mes && !f.dia, ir(mes, '')], ['Mes anterior', f.mes === ant && !f.dia, ir(ant, '')], ['Todo', !f.mes && !f.dia, ir('', '')]];
+}
+function chipsDe(f, defs, set) { return defs.map(([k, t]) => [f[k] ? t(f[k]) : '', !!f[k], () => { f[k] = ''; set(); }]); }
+const CHIPS_PER = [['mes', (v) => verMes(v)], ['dia', (v) => verFecha(v)], ['turno', (v) => 'Turno ' + v], ['jefe', (v) => v], ['nivel', (v) => 'Nivel ' + v], ['tipo', (v) => v], ['labor', (v) => v], ['contratista', (v) => v]];
+function titulo(t, ayuda) { return el('div', {class: 'tit-mod'}, el('h2', null, t), ayuda ? el('p', {class: 'nota'}, ayuda) : null); }
+const subvista = {produccion: 'resumen', desarrollos: 'resumen'};
+function pestanasVista(m, defs) { return subtabs(defs, subvista[m], (id) => { subvista[m] = id; pintar(); }); }
 function mesesDe(filas) { return unicos(filas.map((f) => f.fecha && f.fecha.slice(0, 7))).reverse(); }
 function filtroPeriodo(f, filas) {
   return filas.filter((r) => {
@@ -997,6 +1065,8 @@ function filtroPeriodo(f, filas) {
     if (f.turno && r.turno !== f.turno) return false;
     if (f.jefe && r.jefe !== f.jefe) return false;
     if (f.nivel && r.nivel !== f.nivel) return false;
+    if (f.labor && r.labor !== f.labor) return false;
+    if (f.contratista && r.contratista !== f.contratista) return false;
     return true;
   });
 }
@@ -1013,25 +1083,27 @@ function camposPeriodo(f, filas, set, extra) {
 /* columnas apiladas por día y turno */
 function columnasTurno(filas, valor, unidad) {
   const dias = new Map();
-  for (const r of filas) { if (!r.fecha) continue; const d = dias.get(r.fecha) || {1: 0, 2: 0, 3: 0}; const t = TURNOS.indexOf(r.turno) + 1 || 1; d[t] += valor(r); dias.set(r.fecha, d); }
+  for (const r of filas) { if (!r.fecha) continue; const d = dias.get(r.fecha) || {0: 0, 1: 0, 2: 0, 3: 0}; d[TURNOS.indexOf(r.turno) + 1] += valor(r); dias.set(r.fecha, d); }
   const orden = [...dias.keys()].sort().slice(-62);
   if (!orden.length) return el('div', {class: 'vacio-g'}, 'Sin registros con estos filtros.');
-  const tot = (d) => d[1] + d[2] + d[3], max = Math.max(...orden.map((k) => tot(dias.get(k))), 0.0001);
+  const tot = (d) => d[0] + d[1] + d[2] + d[3], max = Math.max(...orden.map((k) => tot(dias.get(k))), 0.0001);
   return el('div', null,
     el('div', {class: 'cols apil'}, orden.map((k) => { const d = dias.get(k);
       return el('div', {class: 'col', title: `${verFecha(k)} · total ${num(redondea(tot(d)))} ${unidad}\n1ro: ${num(redondea(d[1]))} · 2do: ${num(redondea(d[2]))} · 3ro: ${num(redondea(d[3]))}`},
-        el('div', {class: 'pila', style: `height:${tot(d) / max * 100}%`}, [3, 2, 1].map((t) => d[t] ? el('i', {class: 'tu' + t, style: `flex:${d[t]}`}) : null))); })),
+        el('div', {class: 'pila', style: `height:${tot(d) / max * 100}%`}, [0, 3, 2, 1].map((t) => d[t] ? el('i', {class: 'tu' + t, style: `flex:${d[t]}`}) : null))); })),
     el('div', {class: 'ejes'}, el('span', null, verFecha(orden[0])), el('span', null, verFecha(orden[orden.length - 1]))),
-    leyenda([['tu1', 'Turno 1ro'], ['tu2', 'Turno 2do'], ['tu3', 'Turno 3ro']]));
+    leyenda([['tu1', 'Turno 1ro'], ['tu2', 'Turno 2do'], ['tu3', 'Turno 3ro'], ...([...dias.values()].some((d) => d[0]) ? [['tu0', 'Sin turno']] : [])]));
 }
 function sumaPor(filas, clave, valor, max = 10) {
   const m = new Map(); filas.forEach((r) => { const k = clave(r); if (!k) return; m.set(k, (m.get(k) || 0) + valor(r)); });
   return [...m].filter(([, v]) => v).sort((a, b) => b[1] - a[1]).slice(0, max);
 }
-function barrasSuma(pares, unidad, cls = 's-info') { return barras(pares.map(([k, v]) => ({lb: String(k), partes: [[v, cls]], texto: el('span', null, num(redondea(v)), ' ', el('small', null, unidad))})), 'Sin datos con estos filtros.'); }
+function barrasSuma(pares, unidad, cls = 's-info', ir) { return barras(pares.map(([k, v]) => ({lb: String(k), ir: ir ? () => ir(String(k)) : null, partes: [[v, cls]], texto: el('span', null, num(redondea(v)), ' ', el('small', null, unidad))})), 'Sin datos con estos filtros.'); }
 
+/* los indicadores quedan siempre a la vista; gráficos y tablas según la pestaña elegida */
+function mostrarVista(zona, v) { [...zona.children].forEach((c) => { if (c.classList.contains('graficos')) c.hidden = v !== 'resumen'; else if (c.dataset.v) c.hidden = c.dataset.v !== v; }); }
 /* ---- Vista Desarrollos ---- */
-let fDes = {mes: null, dia: '', turno: '', jefe: '', nivel: '', texto: ''};
+let fDes = {mes: null, dia: '', turno: '', jefe: '', nivel: '', labor: '', contratista: '', texto: ''};
 function vistaDesarrollos() {
   const todas = MD;
   if (fDes.mes === null) fDes.mes = mesesDe(todas)[0] || '';
@@ -1053,11 +1125,11 @@ function vistaDesarrollos() {
         kpi('Promedio diario', 'avance teórico por día', el('span', null, num(dias.length ? redondea(totAv / dias.length) : 0), el('small', {class: 'k-u'}, ' m')), {pie: [`${num(filas.length)} registros en total`, 'neu']})),
       el('div', {class: 'graficos'},
         grafico('Avance teórico por día', 'Metros por día, apilados por turno. Pasa el mouse por una columna para ver el detalle.', columnasTurno(filas, (d) => d.avance, 'm')),
-        grafico('Avance teórico por jefe de punta', 'Metros con los filtros elegidos.', barrasSuma(sumaPor(filas, (d) => d.jefe, (d) => d.avance), 'm'))),
+        grafico('Avance teórico por jefe de punta', 'Metros con los filtros elegidos.', barrasSuma(sumaPor(filas, (d) => d.jefe, (d) => d.avance), 'm', 's-info', (v) => { fDes.jefe = v; pintar(); }))),
       el('div', {class: 'graficos'},
-        grafico('Por labor', 'Las 10 labores con más avance.', barrasSuma(sumaPor(filas, (d) => d.labor, (d) => d.avance), 'm', 's-ok')),
-        grafico('Por contratista', 'Los 10 contratistas con más avance.', barrasSuma(sumaPor(filas, (d) => d.contratista, (d) => d.avance), 'm', 's-warn'))),
-      el('div', {class: 'tarjeta'}, el('h2', null, 'Avance teórico de cada día'), el('p', {class: 'nota'}, 'Suma de cada día con los filtros elegidos. El avance de cada registro es su longitud multiplicada por el factor de eficiencia.'),
+        grafico('Por labor', 'Las 10 labores con más avance.', barrasSuma(sumaPor(filas, (d) => d.labor, (d) => d.avance), 'm', 's-info', (v) => { fDes.labor = v; pintar(); })),
+        grafico('Por contratista', 'Los 10 contratistas con más avance.', barrasSuma(sumaPor(filas, (d) => d.contratista, (d) => d.avance), 'm', 's-info', (v) => { fDes.contratista = v; pintar(); }))),
+      el('div', {class: 'tarjeta', 'data-v': 'dias'}, el('h2', null, 'Avance teórico de cada día'), el('p', {class: 'nota'}, 'Suma de cada día con los filtros elegidos. El avance de cada registro es su longitud multiplicada por el factor de eficiencia.'),
         tabla([
           {k: 'fecha', t: 'Fecha', nw: true, ver: (x) => verFecha(x.fecha), csv: (x) => verFecha(x.fecha)},
           ...TURNOS.map((t) => ({k: 't' + t, t: 'Turno ' + t, num: true, ord: (x) => x.t[t] || 0, ver: (x) => (x.t[t] ? num(redondea(x.t[t])) : '—')})),
@@ -1065,12 +1137,13 @@ function vistaDesarrollos() {
           {k: 'av', t: 'Avance teórico (m)', num: true, ver: (x) => el('b', null, num(redondea(x.av)))},
           {k: 'n', t: 'Registros', num: true}
         ], [...porDia.values()].sort((a, b) => b.fecha.localeCompare(a.fecha)), {lote: 62})),
-      el('div', {class: 'tarjeta'}, el('div', {class: 'cab-tabla'}, el('div', null, el('h2', null, 'Registros de desarrollos'), el('p', {class: 'nota'}, 'Cada fila muestra el cálculo de su avance teórico.')),
+      el('div', {class: 'tarjeta', 'data-v': 'detalle'}, el('div', {class: 'cab-tabla'}, el('div', null, el('h2', null, 'Registros de desarrollos'), el('p', {class: 'nota'}, 'Cada fila muestra el cálculo de su avance teórico.')),
         el('button', {class: 'btn', type: 'button', onclick: () => descargarCsv('desarrollos.csv', COL_DES, filas)}, 'Descargar CSV')), tabla(COL_DES, filas)));
+    mostrarVista(zona, subvista.desarrollos);
   };
-  r.append(el('div', {class: 'filtros'}, camposPeriodo(fDes, todas, aplicarYa), campoBuscar('Buscar', fDes.texto, (v) => { fDes.texto = v; aplicar(); }, 'Labor, contratista, contrato…'),
-    el('button', {class: 'btn', type: 'button', onclick: () => { fDes = {mes: null, dia: '', turno: '', jefe: '', nivel: '', texto: ''}; pintar(); }}, 'Limpiar')), zona);
-  function aplicarYa() { pintar(); }
+  r.append(titulo('Desarrollos', 'Avance teórico = longitud × factor de eficiencia. Toca una barra para filtrar.'),
+    panelFiltros('des', {rapidos: rapidosMes(fDes, todas, () => pintar()), buscar: campoBuscar('Buscar', fDes.texto, (v) => { fDes.texto = v; aplicar(); }, 'Labor, contratista…'), mas: camposPeriodo(fDes, todas, () => pintar()), chips: chipsDe(fDes, CHIPS_PER, () => pintar()), limpiar: () => { fDes = {mes: '', dia: '', turno: '', jefe: '', nivel: '', labor: '', contratista: '', texto: ''}; pintar(); }}),
+    pestanasVista('desarrollos', [['resumen', 'Resumen'], ['dias', 'Avance por día'], ['detalle', 'Registros y cálculo']]), zona);
   aplicar();
   return r;
 }
@@ -1081,19 +1154,19 @@ const COL_DES = [
   {k: 'nivel', t: 'Nivel'},
   {k: 'labor', t: 'Labor'},
   {k: 'contratista', t: 'Contratista'},
-  {k: 'TD', t: 'TD', num: true},
-  {k: 'TP', t: 'TP', num: true},
+  {k: 'TD', x: 1, t: 'TD', num: true},
+  {k: 'TP', x: 1, t: 'TP', num: true},
   {k: 'longitud', t: 'Longitud (m)', num: true, ver: (d) => num(d.longitud)},
   {k: 'factor', t: 'Factor de eficiencia', num: true, ver: (d) => num(d.factor)},
   {k: 'calculo', t: 'Cálculo', nw: true, ord: (d) => d.avance, ver: (d) => el('span', {class: 'calc'}, `${num(d.longitud)} × ${num(d.factor)}`), csv: (d) => `${num(d.longitud)} x ${num(d.factor)}`},
   {k: 'avance', t: 'Avance teórico (m)', num: true, ver: (d) => el('b', null, num(d.avance))},
-  {k: 'cantidad', t: 'Cantidad (cuadros, metros)', num: true, ver: (d) => (d.cantidad ? num(d.cantidad) : '—')},
-  {k: 'contrato', t: 'Código contrato', nw: true},
+  {k: 'cantidad', x: 1, t: 'Cantidad (cuadros, metros)', num: true, ver: (d) => (d.cantidad ? num(d.cantidad) : '—')},
+  {k: 'contrato', x: 1, t: 'Código contrato', nw: true},
   {k: 'Observaciones', t: 'Observaciones'}
 ];
 
 /* ---- Vista Producción (extracciones) ---- */
-let fExt = {mes: null, dia: '', turno: '', jefe: '', nivel: '', tipo: '', variantes: true, texto: ''};
+let fExt = {mes: null, dia: '', turno: '', jefe: '', nivel: '', labor: '', contratista: '', tipo: '', variantes: true, texto: ''};
 function vistaExtracciones() {
   const todas = ME;
   if (fExt.mes === null) fExt.mes = mesesDe(todas)[0] || '';
@@ -1107,7 +1180,7 @@ function vistaExtracciones() {
     const dias = unicos(prod.map((x) => x.fecha)), ultimo = dias[dias.length - 1];
     const tmhUlt = ultimo ? redondea(sumar(prod.filter((x) => x.fecha === ultimo), (x) => x.carros) * FACTOR_TMH) : 0;
     const variantes = filas.filter((x) => x.variante);
-    zona.replaceChildren(
+    zona.replaceChildren(...[
       el('div', {class: 'kpis k4'},
         kpi('Producción', fExt.dia ? verFecha(fExt.dia) : verMes(fExt.mes) || 'todo el periodo', el('span', null, num(total), el('small', {class: 'k-u'}, ' TMH')), {pie: [`${num(carros)} carros MIN × ${num(FACTOR_TMH)}`, 'neu']}),
         kpi('Producción del último día', ultimo ? verFecha(ultimo) : 'sin registros', el('span', null, num(tmhUlt), el('small', {class: 'k-u'}, ' TMH')), {pie: [ultimo ? `${num(prod.filter((x) => x.fecha === ultimo).length)} registros` : '—', 'neu']}),
@@ -1117,16 +1190,17 @@ function vistaExtracciones() {
         el('label', {class: 'chk-in'}, el('input', {type: 'checkbox', checked: fExt.variantes, onchange: (e) => { fExt.variantes = e.target.checked; aplicar(); }}), ' Contarlos como superficie')) : null,
       el('div', {class: 'graficos'},
         grafico('Producción por día', 'TMH por día, apiladas por turno. Solo cuentan los registros de extracción principal con A = superficie.', columnasTurno(prod, (x) => x.carros * FACTOR_TMH, 'TMH')),
-        grafico('Producción por nivel', 'TMH con los filtros elegidos.', barrasSuma(sumaPor(prod, (x) => (x.nivel !== '' ? 'Nivel ' + x.nivel : ''), (x) => x.carros * FACTOR_TMH), 'TMH'))),
+        grafico('Producción por nivel', 'TMH con los filtros elegidos.', barrasSuma(sumaPor(prod, (x) => (x.nivel !== '' ? 'Nivel ' + x.nivel : ''), (x) => x.carros * FACTOR_TMH), 'TMH', 's-info', (v) => { fExt.nivel = v.replace('Nivel ', ''); pintar(); }))),
       el('div', {class: 'graficos'},
-        grafico('Producción por labor', 'Las 10 labores con más TMH.', barrasSuma(sumaPor(prod, (x) => x.labor, (x) => x.carros * FACTOR_TMH), 'TMH', 's-ok')),
-        grafico('Producción por contratista', 'Los 10 contratistas con más TMH.', barrasSuma(sumaPor(prod, (x) => x.contratista, (x) => x.carros * FACTOR_TMH), 'TMH', 's-warn'))),
-      el('div', {class: 'tarjeta'}, el('div', {class: 'cab-tabla'}, el('div', null, el('h2', null, 'Registros de extracción'), el('p', {class: 'nota'}, 'Todos los tipos de extracción. La columna «Producción» muestra las TMH solo en los registros que cuentan.')),
-        el('button', {class: 'btn', type: 'button', onclick: () => descargarCsv('extracciones.csv', COL_EXT(tmh, cuenta), filas)}, 'Descargar CSV')), tabla(COL_EXT(tmh, cuenta), filas)));
+        grafico('Producción por labor', 'Las 10 labores con más TMH.', barrasSuma(sumaPor(prod, (x) => x.labor, (x) => x.carros * FACTOR_TMH), 'TMH', 's-info', (v) => { fExt.labor = v; pintar(); })),
+        grafico('Producción por contratista', 'Los 10 contratistas con más TMH.', barrasSuma(sumaPor(prod, (x) => x.contratista, (x) => x.carros * FACTOR_TMH), 'TMH', 's-info', (v) => { fExt.contratista = v; pintar(); }))),
+      el('div', {class: 'tarjeta', 'data-v': 'detalle'}, el('div', {class: 'cab-tabla'}, el('div', null, el('h2', null, 'Registros de extracción'), el('p', {class: 'nota'}, 'Todos los tipos de extracción. La columna «Producción» muestra las TMH solo en los registros que cuentan.')),
+        el('button', {class: 'btn', type: 'button', onclick: () => descargarCsv('extracciones.csv', COL_EXT(tmh, cuenta), filas)}, 'Descargar CSV')), tabla(COL_EXT(tmh, cuenta), filas))].filter(Boolean));
+    mostrarVista(zona, subvista.produccion);
   };
-  r.append(el('div', {class: 'filtros'}, camposPeriodo(fExt, todas, () => pintar(), campoSelect('Tipo de extracción', unicos(todas.map((x) => x.tipo)), fExt.tipo, (v) => { fExt.tipo = v; aplicar(); })),
-    campoBuscar('Buscar', fExt.texto, (v) => { fExt.texto = v; aplicar(); }, 'Labor, contratista, rajo…'),
-    el('button', {class: 'btn', type: 'button', onclick: () => { fExt = {mes: null, dia: '', turno: '', jefe: '', nivel: '', tipo: '', variantes: true, texto: ''}; pintar(); }}, 'Limpiar')), zona);
+  r.append(titulo('Producción', 'TMH = carros MIN × 1,5. Solo cuentan las extracciones principales con A = superficie. Toca una barra para filtrar.'),
+    panelFiltros('ext', {rapidos: rapidosMes(fExt, todas, () => pintar()), buscar: campoBuscar('Buscar', fExt.texto, (v) => { fExt.texto = v; aplicar(); }, 'Labor, contratista, rajo…'), mas: [...camposPeriodo(fExt, todas, () => pintar()), campoSelect('Tipo de extracción', unicos(todas.map((x) => x.tipo)), fExt.tipo, (v) => { fExt.tipo = v; pintar(); })], chips: chipsDe(fExt, CHIPS_PER, () => pintar()), limpiar: () => { fExt = {mes: '', dia: '', turno: '', jefe: '', nivel: '', labor: '', contratista: '', tipo: '', variantes: fExt.variantes, texto: ''}; pintar(); }}),
+    pestanasVista('produccion', [['resumen', 'Resumen'], ['detalle', 'Registros']]), zona);
   aplicar();
   return r;
 }
@@ -1138,12 +1212,12 @@ const COL_EXT = (tmh, cuenta) => [
   {k: 'destino', t: 'A'},
   {k: 'nivel', t: 'Nivel'},
   {k: 'labor', t: 'Labor'},
-  {k: 'Rajo', t: 'Rajo'},
+  {k: 'Rajo', x: 1, t: 'Rajo'},
   {k: 'contratista', t: 'Contratista'},
   {k: 'carros', t: 'Carros MIN', num: true},
-  {k: 'carrosCaja', t: 'Carros caja', num: true},
+  {k: 'carrosCaja', x: 1, t: 'Carros caja', num: true},
   {k: 'tmh', t: 'Producción (TMH)', num: true, ord: tmh, ver: (x) => (cuenta(x) ? el('b', null, num(redondea(tmh(x)))) : el('span', {class: 'sub'}, 'No cuenta')), csv: (x) => (cuenta(x) ? redondea(tmh(x)) : '')},
-  {k: 'contrato', t: 'Código contrato', nw: true}
+  {k: 'contrato', x: 1, t: 'Código contrato', nw: true}
 ];
 
 /* ---- Vista Personal (Dimensión Personal) ---- */
@@ -1161,18 +1235,17 @@ function vistaPersonal() {
         kpi('Personal asignado', 'en el movimiento actual', num(filas.length), {pie: [`${num(todos.length - asignados.length)} sin nivel, turno ni labor`, 'neu']}),
         ...TURNOS.map((t) => kpi(`Turno ${t}`, 'personas', num(filas.filter((p) => p.turno === t).length), {pie: [`${num(unicos(filas.filter((p) => p.turno === t).map((p) => p.labor)).length)} labores`, 'neu']}))),
       el('div', {class: 'graficos'},
-        grafico('Personas por tipo de labor', null, barras(conteo(filas, (p) => p.tipo || 'Sin tipo', 10).map(([t, n]) => ({lb: t, partes: [[n, 's-info']], texto: num(n)})))),
+        grafico('Personas por tipo de labor', null, barras(conteo(filas, (p) => p.tipo || 'Sin tipo', 10).map(([t, n]) => ({lb: t, ir: t === 'Sin tipo' ? null : () => { fPer.tipo = t; pintar(); }, partes: [[n, 's-info']], texto: num(n)})))),
         grafico('Personas por nivel y turno', 'Cada celda es el número de personas.', matrizNivelTurno(filas, niveles))),
       el('h2', {class: 'tit-seccion'}, 'Contratistas por nivel y labor'),
       el('div', {class: 'niveles'}, niveles.map((n) => tarjetaNivel(n, filas.filter((p) => (p.nivel || 'Sin nivel') === n)))));
   };
-  r.append(el('div', {class: 'filtros'},
-    campoSelect('Nivel', unicos(asignados.map((p) => p.nivel)), fPer.nivel, (v) => { fPer.nivel = v; aplicar(); }),
-    campoSelect('Turno', TURNOS, fPer.turno, (v) => { fPer.turno = v; aplicar(); }),
-    campoSelect('Tipo de labor', unicos(asignados.map((p) => p.tipo)), fPer.tipo, (v) => { fPer.tipo = v; aplicar(); }),
-    campoSelect('Contrato (CTTo)', unicos(asignados.map((p) => p.ctto)), fPer.ctto, (v) => { fPer.ctto = v; aplicar(); }),
-    campoBuscar('Buscar', fPer.texto, (v) => { fPer.texto = v; aplicar(); }, 'Nombre, labor, cabecilla…'),
-    el('button', {class: 'btn', type: 'button', onclick: () => { fPer = {nivel: '', turno: '', tipo: '', ctto: '', texto: ''}; pintar(); }}, 'Limpiar')), zona);
+  const chipsPer = [['nivel', (v) => 'Nivel ' + v], ['turno', (v) => 'Turno ' + v], ['tipo', (v) => v], ['ctto', (v) => 'Contrato ' + v]];
+  const ponT = (t) => () => { fPer.turno = t; pintar(); };
+  r.append(titulo('Personal', 'Personas con nivel, turno o tipo de labor en la lista Dimensión Personal. Abre un nivel para ver quién está en cada labor.'),
+    panelFiltros('per', {rapidos: [['Todos', !fPer.turno, ponT('')], ...TURNOS.map((t) => ['Turno ' + t, fPer.turno === t, ponT(t)])], buscar: campoBuscar('Buscar', fPer.texto, (v) => { fPer.texto = v; aplicar(); }, 'Nombre, labor, cabecilla…'),
+      mas: [campoSelect('Nivel', unicos(asignados.map((p) => p.nivel)), fPer.nivel, (v) => { fPer.nivel = v; pintar(); }), campoSelect('Tipo de labor', unicos(asignados.map((p) => p.tipo)), fPer.tipo, (v) => { fPer.tipo = v; pintar(); }), campoSelect('Contrato (CTTo)', unicos(asignados.map((p) => p.ctto)), fPer.ctto, (v) => { fPer.ctto = v; pintar(); })],
+      chips: chipsDe(fPer, chipsPer, () => pintar()), limpiar: () => { fPer = {nivel: '', turno: '', tipo: '', ctto: '', texto: ''}; pintar(); }}), zona);
   aplicar();
   return r;
 }
@@ -1186,7 +1259,7 @@ function matrizNivelTurno(filas, niveles) {
 function tarjetaNivel(n, gente) {
   const labores = new Map();
   gente.forEach((p) => { const k = p.labor || 'Sin labor'; if (!labores.has(k)) labores.set(k, []); labores.get(k).push(p); });
-  return el('details', {class: 'nivel', open: true}, el('summary', null, el('span', {class: 'n-tit'}, n === 'Sin nivel' ? n : 'Nivel ' + n), el('span', {class: 'tag t-neu'}, `${gente.length} personas · ${labores.size} labores`)),
+  return el('details', {class: 'nivel', open: !!(fPer.nivel || fPer.texto)}, el('summary', null, el('span', {class: 'n-tit'}, n === 'Sin nivel' ? n : 'Nivel ' + n), el('span', {class: 'tag t-neu'}, `${gente.length} personas · ${labores.size} labores`)),
     el('div', {class: 'labores'}, [...labores].sort((a, b) => b[1].length - a[1].length).map(([lab, ps]) => el('div', {class: 'labor'},
       el('div', {class: 'l-cab'}, el('b', null, lab), el('span', {class: 'sub'}, `${ps.length}`)),
       el('ul', null, ps.sort((a, b) => TURNOS.indexOf(a.turno) - TURNOS.indexOf(b.turno) || a.nombre.localeCompare(b.nombre, 'es')).map((p) => el('li', null,
@@ -1214,23 +1287,42 @@ function vistaConsultas() {
     const filas = datos.filter((c) => !q || [def.clave(c), def.nombre(c), ...def.chips(c), ...def.campos.map(([, k]) => c[k])].some((x) => norm(x).includes(q)))
       .sort((a, b) => String(def.clave(a)).localeCompare(String(def.clave(b)), 'es', {numeric: true}));
     res.replaceChildren(el('div', {class: 'resumen'}, el('span', null, el('b', null, num(filas.length)), ` de ${num(datos.length)} registros`)),
-      filas.length ? el('div', {class: 'c-lista'}, filas.slice(0, 300).map((c) => fichaConsulta(def, c))) : el('div', {class: 'vacio'}, 'Nada coincide con la búsqueda.'),
+      filas.length ? el('div', {class: 'c-lista'}, filas.slice(0, 300).map((c) => fichaConsulta(def, c, aplicar))) : el('div', {class: 'vacio'}, 'Nada coincide con la búsqueda.'),
       filas.length > 300 ? el('p', {class: 'nota'}, 'Se muestran los primeros 300. Escribe más para afinar la búsqueda.') : null);
   };
   const buscador = el('input', {type: 'search', class: 'c-buscar', value: qCons[consulta], placeholder: 'Buscar en ' + def.titulo.toLowerCase() + ': ' + def.ph, oninput: (e) => { qCons[consulta] = e.target.value; aplicar(); }});
   r.append(el('div', {class: 'tarjeta'}, el('h2', null, def.titulo), el('p', {class: 'nota'}, 'Escribe para buscar y toca un registro para ver toda su información.'), buscador, res));
   aplicar();
-  setTimeout(() => buscador.focus(), 0);
   return r;
 }
-function fichaConsulta(def, c) {
+function fichaConsulta(def, c, aplicar) {
   const abierta = abiertoCons[consulta] === c.ID;
   const cuerpo = abierta ? el('div', {class: 'c-ficha'}, el('dl', null, def.campos.map(([t, k, tipo]) => el('div', null, el('dt', null, t), el('dd', null, c[k] === null || c[k] === undefined || c[k] === '' || c[k] === '<null>' ? '—' : tipo === 'num' ? num(c[k]) : String(c[k]))))),
     def.uso(c) ? el('p', {class: 'sub', style: 'margin:10px 0 0'}, def.uso(c)) : null) : null;
   return el('div', {class: 'c-item' + (abierta ? ' abierta' : '')},
-    el('button', {type: 'button', class: 'c-cab', 'aria-expanded': String(abierta), onclick: () => { abiertoCons[consulta] = abierta ? null : c.ID; pintar(); }},
+    el('button', {type: 'button', class: 'c-cab', 'aria-expanded': String(abierta), onclick: () => { abiertoCons[consulta] = abierta ? null : c.ID; aplicar(); }},
       el('span', {class: 'c-cod'}, def.clave(c)), el('span', {class: 'c-nom'}, def.nombre(c) || '—'), el('span', {class: 'c-chips'}, def.chips(c).map((t) => el('span', {class: 'tag t-neu'}, t)))),
     cuerpo);
+}
+
+/* ---- Inicio ---- */
+function vistaInicio() {
+  const r = el('div'), mes = mesActual(), caja = (id, t, lineas, accion) => el('button', {type: 'button', class: 'ini', onclick: () => irModulo(id)},
+    el('span', {class: 'ini-cab'}, icono((MODULOS.find((m) => m[0] === id) || [])[2]), t), ...lineas, el('span', {class: 'ini-ir'}, accion, ' →'));
+  const dato = (v, u, d) => el('span', {class: 'ini-d'}, el('b', null, v, u ? el('small', null, ' ' + u) : null), el('span', {class: 'sub'}, d));
+  const sin = el('span', {class: 'sub'}, 'No se pudieron leer estos datos. Abre el módulo para ver el motivo.');
+  const ult = (a) => a.reduce((m, x) => (x.fecha > m ? x.fecha : m), '');
+  const c = [];
+  if (ME) { const p = ME.filter((x) => x.exacto || x.variante), u = ult(p), s = (a) => num(redondea(sumar(a, (x) => x.carros) * FACTOR_TMH));
+    c.push(caja('produccion', 'Producción', [dato(s(p.filter((x) => x.fecha === u)), 'TMH', 'el ' + verFecha(u)), dato(s(p.filter((x) => x.fecha.startsWith(mes))), 'TMH', 'en ' + verMes(mes))], 'Ver producción')); } else c.push(caja('produccion', 'Producción', [sin], 'Abrir'));
+  if (MD) { const u = ult(MD), s = (a) => num(sumar(a, (x) => x.avance));
+    c.push(caja('desarrollos', 'Desarrollos', [dato(s(MD.filter((x) => x.fecha === u)), 'm', 'avance teórico el ' + verFecha(u)), dato(s(MD.filter((x) => x.fecha.startsWith(mes))), 'm', 'en ' + verMes(mes))], 'Ver avance')); } else c.push(caja('desarrollos', 'Desarrollos', [sin], 'Abrir'));
+  if (D.personal) { const a = D.personal.filter((p) => p.TipodeLabor || (p.Nivel && p.Nivel !== '-') || p.Turno);
+    c.push(caja('personal', 'Personal', [dato(num(a.length), 'personas', 'con nivel, turno o labor'), el('span', {class: 'sub'}, TURNOS.map((t) => t + ': ' + a.filter((p) => p.Turno === t).length).join(' · '))], 'Ver quién está en cada labor')); } else c.push(caja('personal', 'Personal', [sin], 'Abrir'));
+  if (M) c.push(caja('polvorin', 'Polvorín', [dato(num(M.vales.filter((v) => v.pendiente).length), 'vales', 'pendientes de despacho'), dato(num(totalAlertas()), 'controles', 'con algo que revisar')], 'Ver polvorín')); else c.push(caja('polvorin', 'Polvorín', [sin], 'Abrir'));
+  c.push(caja('consultas', 'Consultas', [el('span', {class: 'sub'}, 'Busca un contrato o un centro de costos y mira toda su información.')], 'Buscar'));
+  r.append(titulo('¿Qué quieres ver?', 'Toca una tarjeta para abrirla.'), el('div', {class: 'inicio'}, c));
+  return r;
 }
 
 /* ==== Ciclo de carga ==== */
@@ -1245,14 +1337,17 @@ async function cargar(silencioso) {
   b.disabled = true; b.textContent = 'Actualizando…';
   const mod = modulo, req = REQ[mod];
   const nuevo = req.some((l) => !D[l]);
-  if (nuevo) pantalla('Cargando datos', 'Leyendo las listas de SharePoint de este módulo…', null, true);
+  if (nuevo && !(mod === 'inicio' && REQ.inicio.some((l) => D[l]))) pantalla('Cargando datos', 'Leyendo las listas de SharePoint de este módulo…', null, true);
   try {
     /* «personal» es opcional para Polvorín: si falla, se sigue sin nombres de contratista */
-    const leidas = await Promise.all(req.map((l) => leerLista(l).catch((e) => { if (l === 'personal' && mod === 'polvorin') return []; throw e; })));
-    req.forEach((l, i) => { D[l] = leidas[i]; LEIDO[l] = Date.now(); });
+    const fallos = [];
+    const leidas = await Promise.all(req.map((l) => leerLista(l).catch((e) => { if (mod === 'inicio') { fallos.push(e); return null; } if (l === 'personal' && mod === 'polvorin') return undefined; throw e; })));
+    if (fallos.length === req.length) throw fallos[0];
+    req.forEach((l, i) => { if (leidas[i]) { D[l] = leidas[i]; LEIDO[l] = Date.now(); } });
     if (D.catalogo && D.inventario && D.movimientos && D.vales) M = construir({catalogo: D.catalogo, inventario: D.inventario, movimientos: D.movimientos, vales: D.vales, personal: D.personal || []});
-    if (D.desarrollos) MD = construirDesarrollos();
-    if (D.extracciones) ME = construirExtracciones();
+    const base = D.volteos && D.centroCostos && D.personal && D.cartilla;
+    if (D.desarrollos && base) MD = construirDesarrollos();
+    if (D.extracciones && base) ME = construirExtracciones();
     if (mod !== modulo) return;
     marcarEstado();
     pintarTabs();
@@ -1260,6 +1355,7 @@ async function cargar(silencioso) {
     if (nuevo || !(silencioso && activo && /INPUT|SELECT/.test(activo.tagName))) pintar();
   } catch (e) {
     console.error(e);
+    if (mod !== modulo) return;
     const txt = e.status === 403 || e.status === 401 ? 'Tu cuenta no tiene permiso para leer estas listas. Pide acceso de lectura al administrador del sitio ReporteDiarioMinas.' : e.status === 404 ? 'No se encontró el sitio o alguna de las listas. Puede que hayan cambiado de lugar.' : 'No se pudo conectar con SharePoint. Revisa tu conexión e inténtalo otra vez.';
     if (!nuevo) {
       $('#main').prepend(el('div', {class: 'aviso', role: 'alert'}, `${txt} Se muestran los últimos datos cargados.`));
@@ -1268,6 +1364,7 @@ async function cargar(silencioso) {
     }
   } finally {
     cargando = false; b.disabled = false; b.textContent = 'Actualizar';
+    if (mod !== modulo && REQ[modulo].some((l) => !D[l])) setTimeout(() => cargar(), 0);
   }
 }
 async function arrancar() {
