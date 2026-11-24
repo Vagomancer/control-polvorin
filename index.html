@@ -238,6 +238,34 @@ details.nivel>summary::-webkit-details-marker{display:none}
 .c-ficha dd{margin:2px 0 0;font-size:14px}
 @media (max-width:700px){.c-cab{grid-template-columns:80px minmax(0,1fr)}.c-chips{display:none}}
 
+/* pantalla de carga */
+.carga{max-width:680px;margin:3vh auto 0;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--sh-1)}
+.mn{display:block;width:100%;height:auto;background:#1b2b45}
+.mn-carro{animation:mn-sale 4.6s linear infinite}
+.mn-vaiven{animation:mn-vaiven .42s ease-in-out infinite alternate}
+.mn-rueda{animation:gira .85s linear infinite}
+.mn-farol{transform-origin:197px 119px;animation:mn-farol 2.4s ease-in-out infinite alternate}
+.mn-polvo{opacity:0;animation:mn-polvo 2.3s ease-out infinite}
+@keyframes mn-sale{from{transform:translate(90px,236px)}to{transform:translate(730px,236px)}}
+@keyframes mn-vaiven{from{transform:translateY(0) rotate(-.7deg)}to{transform:translateY(-2px) rotate(.7deg)}}
+@keyframes mn-farol{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
+@keyframes mn-polvo{0%{opacity:0;transform:translate(0,0)}25%{opacity:.5}100%{opacity:0;transform:translate(-16px,-26px)}}
+.carga-t{padding:20px 24px 24px;text-align:center}
+.carga-t h2{justify-content:center;font-size:20px}.carga-t h2::before{display:none}
+.carga-t p{margin:4px 0 14px;color:var(--muted)}
+.carga-b{height:8px;border-radius:99px;background:var(--panel2);overflow:hidden}
+.carga-b i{display:block;height:100%;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .35s ease-out}
+.carga-l{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;font-size:13px;color:var(--muted)}
+.carga-l li::before{content:"○ "}.carga-l li.ok{color:var(--ok)}.carga-l li.ok::before{content:"✓ "}
+.carga-l li.mal{color:var(--bad)}.carga-l li.mal::before{content:"! ";font-weight:700}
+@media (prefers-reduced-motion:reduce){.mn-carro{transform:translate(400px,236px)}}
+/* lectura y contraste */
+.lectura{font-size:13px;min-height:22px;margin-bottom:6px;color:var(--fg);font-variant-numeric:tabular-nums}
+.col.sel{background:color-mix(in srgb,var(--accent) 14%,transparent);border-radius:4px}
+.col{cursor:pointer!important}
+.chip-t.tu1{background:#245a94}.chip-t.tu2{background:#944e00}.chip-t.tu3{background:#08694a}
+.k-per,.k-ejes,.ejes,.sub{font-size:12.5px}.k-tit{font-size:14px}.nota{font-size:13.5px}
+.k-cab{flex-wrap:wrap;gap:0 8px}.k-per{white-space:normal}
 /* facilidad de uso */
 body{font-size:15px}
 .tit-mod{margin:4px 0 12px}.tit-mod h2{font-size:22px}.tit-mod h2::before{display:none}.tit-mod .nota{font-size:14px;margin:2px 0 0}
@@ -507,8 +535,8 @@ function columnasDia(filas) {
   if (!orden.length) return el('div', {class: 'vacio-g'}, 'Sin movimientos en este rango.');
   const max = Math.max(...orden.map((k) => Math.max(dias.get(k).i, dias.get(k).s)), 1);
   return el('div', null,
-    el('div', {class: 'cols'}, orden.map((k) => { const d = dias.get(k); return el('div', {class: 'col', title: `${verFecha(k)} · ${d.i} ingresos · ${d.s} salidas`},
-      el('div', {class: 'up'}, el('i', {class: 's-ok', style: `height:${d.i / max * 100}%`})), el('div', {class: 'dn'}, el('i', {class: 's-warn', style: `height:${d.s / max * 100}%`}))); })),
+    conLectura(el('div', {class: 'cols'}, orden.map((k) => { const d = dias.get(k); return el('div', {class: 'col'},
+      el('div', {class: 'up'}, el('i', {class: 's-ok', style: `height:${d.i / max * 100}%`})), el('div', {class: 'dn'}, el('i', {class: 's-warn', style: `height:${d.s / max * 100}%`}))); })), orden.map((k) => `${verFecha(k)}: ${dias.get(k).i} ingresos · ${dias.get(k).s} salidas`)),
     el('div', {class: 'ejes'}, el('span', null, verFecha(orden[0])), el('span', null, verFecha(orden[orden.length - 1]))),
     leyenda([['s-ok', 'Ingresos (arriba)'], ['s-warn', 'Salidas (abajo)']]));
 }
@@ -559,6 +587,7 @@ async function leerGraph(nombre) {
   while (url) {
     const j = await graph(url);
     for (const it of j.value) filas.push({...it.fields, ID: Number(it.id)});
+    progreso(nombre, filas.length);
     url = j['@odata.nextLink'] || null;
   }
   return filas;
@@ -722,7 +751,7 @@ function pintarTabs() {
 function irModulo(id) {
   modulo = id; try { localStorage.setItem('rm-modulo', id); } catch (e) {}
   pintarTabs(); window.scrollTo(0, 0);
-  if (REQ[id].some((l) => !D[l])) { if (cargando) pantalla('Cargando datos', 'Leyendo las listas de SharePoint de este módulo…', null, true); cargar(); } else { pintar(); marcarEstado(); }
+  if (REQ[id].some((l) => !D[l])) { if (cargando) pantallaCarga(REQ[id]); cargar(); } else { pintar(); marcarEstado(); }
 }
 function irA(id) { pestana = id; pintar(); window.scrollTo(0, 0); }
 function pintar() {
@@ -865,7 +894,7 @@ function vistaMovimientos() {
     const csvBtn = el('button', {class: 'btn', type: 'button', onclick: () => descargarCsv('movimientos-polvorin.csv', COL_MOV, filas)}, 'Descargar CSV');
     const tipos = conteo(filas, (m) => m.Tipo, 12);
     graf.replaceChildren(
-      grafico('Movimientos por día', 'Según los filtros elegidos. Pasa el mouse por una columna para ver el detalle.', columnasDia(filas)),
+      grafico('Movimientos por día', 'Según los filtros elegidos.', columnasDia(filas)),
       grafico('Movimientos por tipo', 'Cantidad de registros de cada tipo con los filtros elegidos.', barras(tipos.map(([t, n]) => ({lb: t, partes: [[n, String(t).startsWith('Ingreso') ? 's-ok' : String(t).startsWith('Salida') ? 's-warn' : 's-info']], texto: num(n)})), 'Sin movimientos con estos filtros.')));
     res.replaceChildren(el('div', {style: 'display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start'}, resumen, csvBtn), tabla(COL_MOV, filas));
   };
@@ -1080,6 +1109,16 @@ function camposPeriodo(f, filas, set, extra) {
     extra || null
   ];
 }
+function conLectura(cols, textos) {
+  const pista = 'Toca o recorre las columnas para ver el detalle.', out = el('div', {class: 'lectura', 'aria-live': 'polite'}, pista);
+  [...cols.children].forEach((c, i) => {
+    c.tabIndex = i ? -1 : 0; c.setAttribute('role', 'img'); c.setAttribute('aria-label', textos[i]);
+    const ver = () => { out.textContent = textos[i]; [...cols.children].forEach((x) => x.classList.toggle('sel', x === c)); };
+    c.addEventListener('pointerenter', ver); c.addEventListener('focus', ver); c.addEventListener('click', ver);
+    c.addEventListener('keydown', (e) => { const n = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : -1; const d = cols.children[n]; if (d) { e.preventDefault(); c.tabIndex = -1; d.tabIndex = 0; d.focus(); d.click(); } });
+  });
+  return [out, cols];
+}
 /* columnas apiladas por día y turno */
 function columnasTurno(filas, valor, unidad) {
   const dias = new Map();
@@ -1088,10 +1127,11 @@ function columnasTurno(filas, valor, unidad) {
   if (!orden.length) return el('div', {class: 'vacio-g'}, 'Sin registros con estos filtros.');
   const tot = (d) => d[0] + d[1] + d[2] + d[3], max = Math.max(...orden.map((k) => tot(dias.get(k))), 0.0001);
   return el('div', null,
-    el('div', {class: 'cols apil'}, orden.map((k) => { const d = dias.get(k);
-      return el('div', {class: 'col', title: `${verFecha(k)} · total ${num(redondea(tot(d)))} ${unidad}\n1ro: ${num(redondea(d[1]))} · 2do: ${num(redondea(d[2]))} · 3ro: ${num(redondea(d[3]))}`},
-        el('div', {class: 'pila', style: `height:${tot(d) / max * 100}%`}, [0, 3, 2, 1].map((t) => d[t] ? el('i', {class: 'tu' + t, style: `flex:${d[t]}`}) : null))); })),
+    conLectura(el('div', {class: 'cols apil'}, orden.map((k) => { const d = dias.get(k);
+      return el('div', {class: 'col'},
+        el('div', {class: 'pila', style: `height:${tot(d) / max * 100}%`}, [0, 3, 2, 1].map((t) => d[t] ? el('i', {class: 'tu' + t, style: `flex:${d[t]}`}) : null))); })), orden.map((k) => { const d = dias.get(k); return `${verFecha(k)}: ${num(redondea(tot(d)))} ${unidad} · 1ro ${num(redondea(d[1]))} · 2do ${num(redondea(d[2]))} · 3ro ${num(redondea(d[3]))}${d[0] ? ' · sin turno ' + num(redondea(d[0])) : ''}`; })),
     el('div', {class: 'ejes'}, el('span', null, verFecha(orden[0])), el('span', null, verFecha(orden[orden.length - 1]))),
+    dias.size > orden.length ? el('p', {class: 'nota', style: 'margin:6px 0 0'}, 'El gráfico muestra los últimos ' + orden.length + ' días con registros; el total incluye todo el periodo.') : null,
     leyenda([['tu1', 'Turno 1ro'], ['tu2', 'Turno 2do'], ['tu3', 'Turno 3ro'], ...([...dias.values()].some((d) => d[0]) ? [['tu0', 'Sin turno']] : [])]));
 }
 function sumaPor(filas, clave, valor, max = 10) {
@@ -1124,7 +1164,7 @@ function vistaDesarrollos() {
         kpi('Factor de eficiencia', 'aplicado al avance', factores.length === 1 ? num(factores[0]) : factores.length ? `${num(Math.min(...factores))}–${num(Math.max(...factores))}` : '—', {pie: ['Avance teórico = longitud × factor', 'neu']}),
         kpi('Promedio diario', 'avance teórico por día', el('span', null, num(dias.length ? redondea(totAv / dias.length) : 0), el('small', {class: 'k-u'}, ' m')), {pie: [`${num(filas.length)} registros en total`, 'neu']})),
       el('div', {class: 'graficos'},
-        grafico('Avance teórico por día', 'Metros por día, apilados por turno. Pasa el mouse por una columna para ver el detalle.', columnasTurno(filas, (d) => d.avance, 'm')),
+        grafico('Avance teórico por día', 'Metros por día, apilados por turno.', columnasTurno(filas, (d) => d.avance, 'm')),
         grafico('Avance teórico por jefe de punta', 'Metros con los filtros elegidos.', barrasSuma(sumaPor(filas, (d) => d.jefe, (d) => d.avance), 'm', 's-info', (v) => { fDes.jefe = v; pintar(); }))),
       el('div', {class: 'graficos'},
         grafico('Por labor', 'Las 10 labores con más avance.', barrasSuma(sumaPor(filas, (d) => d.labor, (d) => d.avance), 'm', 's-info', (v) => { fDes.labor = v; pintar(); })),
@@ -1180,16 +1220,21 @@ function vistaExtracciones() {
     const dias = unicos(prod.map((x) => x.fecha)), ultimo = dias[dias.length - 1];
     const tmhUlt = ultimo ? redondea(sumar(prod.filter((x) => x.fecha === ultimo), (x) => x.carros) * FACTOR_TMH) : 0;
     const variantes = filas.filter((x) => x.variante);
+    /* secundaria: todos sus registros, sin importar A. Tonelaje = carros MIN × 1,5 */
+    const secund = filas.filter((x) => x.tipo === 'Extracción Secundaria'), totSec = redondea(sumar(secund, (x) => x.carros) * FACTOR_TMH);
+    const porDiaP = sumaPor(prod, (x) => x.fecha, (x) => x.carros * FACTOR_TMH, 1e6), mejor = porDiaP[0], empates = mejor ? porDiaP.filter((d) => d[1] === mejor[1]).length - 1 : 0;
     zona.replaceChildren(...[
       el('div', {class: 'kpis k4'},
         kpi('Producción', fExt.dia ? verFecha(fExt.dia) : verMes(fExt.mes) || 'todo el periodo', el('span', null, num(total), el('small', {class: 'k-u'}, ' TMH')), {pie: [`${num(carros)} carros MIN × ${num(FACTOR_TMH)}`, 'neu']}),
         kpi('Producción del último día', ultimo ? verFecha(ultimo) : 'sin registros', el('span', null, num(tmhUlt), el('small', {class: 'k-u'}, ' TMH')), {pie: [ultimo ? `${num(prod.filter((x) => x.fecha === ultimo).length)} registros` : '—', 'neu']}),
         kpi('Promedio diario', 'TMH por día con producción', el('span', null, num(dias.length ? redondea(total / dias.length) : 0), el('small', {class: 'k-u'}, ' TMH')), {pie: [`${num(dias.length)} días`, 'neu']}),
-        kpi('Registros que cuentan', 'principal y A = superficie', num(prod.length), {pie: [`de ${num(filas.length)} registros de extracción`, 'neu']})),
+        kpi('Día con más extracción', 'extracción principal', mejor ? verFecha(mejor[0]) : '—', {chico: true, pie: [mejor ? `${num(redondea(mejor[1]))} TMH${empates ? ` · igualado por ${num(empates)} ${empates === 1 ? 'día' : 'días'} más` : ''}` : 'Sin producción con estos filtros', 'neu']})),
       variantes.length ? el('div', {class: 'aviso suave'}, el('b', null, `${num(variantes.length)} registros `), `tienen «A» escrito de otra forma (${unicos(variantes.map((x) => `«${x.A}»`)).join(', ')}). `,
         el('label', {class: 'chk-in'}, el('input', {type: 'checkbox', checked: fExt.variantes, onchange: (e) => { fExt.variantes = e.target.checked; aplicar(); }}), ' Contarlos como superficie')) : null,
       el('div', {class: 'graficos'},
-        grafico('Producción por día', 'TMH por día, apiladas por turno. Solo cuentan los registros de extracción principal con A = superficie.', columnasTurno(prod, (x) => x.carros * FACTOR_TMH, 'TMH')),
+        grafico('Extracción principal por fecha', `Total: ${num(total)} TMH. Solo registros con A = superficie, por turno.`, columnasTurno(prod, (x) => x.carros * FACTOR_TMH, 'TMH')),
+        grafico('Extracción secundaria por fecha', `Total: ${num(totSec)} TMH. Todos los registros de extracción secundaria, por turno.`, columnasTurno(secund, (x) => x.carros * FACTOR_TMH, 'TMH'))),
+      el('div', {class: 'graficos'},
         grafico('Producción por nivel', 'TMH con los filtros elegidos.', barrasSuma(sumaPor(prod, (x) => (x.nivel !== '' ? 'Nivel ' + x.nivel : ''), (x) => x.carros * FACTOR_TMH), 'TMH', 's-info', (v) => { fExt.nivel = v.replace('Nivel ', ''); pintar(); }))),
       el('div', {class: 'graficos'},
         grafico('Producción por labor', 'Las 10 labores con más TMH.', barrasSuma(sumaPor(prod, (x) => x.labor, (x) => x.carros * FACTOR_TMH), 'TMH', 's-info', (v) => { fExt.labor = v; pintar(); })),
@@ -1327,6 +1372,29 @@ function vistaInicio() {
 
 /* ==== Ciclo de carga ==== */
 let cargando = false;
+/* Pantalla de carga: carrito saliendo de la bocamina. El avance es el real de cada lista. */
+const ESCENA = "<defs>\n<linearGradient id=\"mn-cielo\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1b2b45\"/><stop offset=\".62\" stop-color=\"#6d5b68\"/><stop offset=\"1\" stop-color=\"#e8a05a\"/></linearGradient>\n<linearGradient id=\"mn-roca\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#4f4a4c\"/><stop offset=\"1\" stop-color=\"#2a282c\"/></linearGradient>\n<linearGradient id=\"mn-sombra\" x1=\"0\" x2=\"1\"><stop offset=\"0\" stop-color=\"#08090c\"/><stop offset=\".55\" stop-color=\"#08090c\" stop-opacity=\".85\"/><stop offset=\"1\" stop-color=\"#08090c\" stop-opacity=\"0\"/></linearGradient>\n<radialGradient id=\"mn-luz\"><stop offset=\"0\" stop-color=\"#ffd97a\" stop-opacity=\".85\"/><stop offset=\"1\" stop-color=\"#ffd97a\" stop-opacity=\"0\"/></radialGradient>\n<clipPath id=\"mn-clip\"><path d=\"M150 236V132q0-46 47-46t47 46V100H660V270H150z\"/></clipPath></defs>\n<rect width=\"640\" height=\"270\" fill=\"url(#mn-cielo)\"/>\n<circle cx=\"520\" cy=\"152\" r=\"30\" fill=\"#ffd08a\"/>\n<path d=\"M240 236 330 152l52 40 74-82 70 74 48-34 66 60v26z\" fill=\"#4a4658\"/>\n<path d=\"M0 0H92l34 22 46 2 40 34 34 10 22 46 20 22 14 52 18 48H0z\" fill=\"url(#mn-roca)\"/>\n<path d=\"M92 0l-22 60 40 44-30 66M172 24l-14 40 30 14M246 68l-10 30 26 22\" fill=\"none\" stroke=\"#6b6567\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n<path d=\"M150 236V132q0-46 47-46t47 46v104z\" fill=\"#08090c\"/>\n<path d=\"M0 236H640V270H0z\" fill=\"#2f2723\"/>\n<g fill=\"#6e4b2c\"><rect x=\"160\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"191\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"222\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"253\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"284\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"315\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"346\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"377\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"408\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"439\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"470\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"501\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"532\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"563\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"594\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/><rect x=\"625\" y=\"239\" width=\"16\" height=\"7\" rx=\"1\"/></g>\n<path d=\"M150 236H640\" stroke=\"#b9c0c9\" stroke-width=\"4\"/>\n<g clip-path=\"url(#mn-clip)\"><g class=\"mn-carro\"><g class=\"mn-vaiven\">\n<circle cx=\"64\" cy=\"-26\" r=\"58\" fill=\"url(#mn-luz)\"/>\n<path d=\"M-40-62l16-18 18 6 16-16 22 12 14-4 12 20z\" fill=\"#5d4a3c\"/><path d=\"M-24-80l8 14 20-6M16-78l4 12 20-2\" fill=\"none\" stroke=\"#8a6f58\" stroke-width=\"3\"/>\n<path d=\"M-28-70l6-5 6 5-6 6zM26-70l5-5 6 5-6 5z\" fill=\"#f2c14e\"/>\n<path d=\"M-52-64H62L50-20H-40z\" fill=\"#c9701a\" stroke=\"#1d1410\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n<path d=\"M-56-68H66v9H-56z\" fill=\"#8d4a0d\" stroke=\"#1d1410\" stroke-width=\"3\"/><path d=\"M-18-58l5 37M28-58l-5 37\" stroke=\"#8d4a0d\" stroke-width=\"5\"/>\n<path d=\"M-44-20H54v7H-44z\" fill=\"#30343b\"/><path d=\"M60-42h10v14H60z\" fill=\"#30343b\"/><circle cx=\"71\" cy=\"-35\" r=\"5\" fill=\"#ffe7a3\"/></g>\n<g transform=\"translate(-24 -13)\"><g class=\"mn-rueda\"><circle r=\"13\" fill=\"#1f2329\" stroke=\"#8c95a1\" stroke-width=\"4\"/><path d=\"M-9 0H9M0-9V9\" stroke=\"#8c95a1\" stroke-width=\"3\"/></g></g><g transform=\"translate(34 -13)\"><g class=\"mn-rueda\"><circle r=\"13\" fill=\"#1f2329\" stroke=\"#8c95a1\" stroke-width=\"4\"/><path d=\"M-9 0H9M0-9V9\" stroke=\"#8c95a1\" stroke-width=\"3\"/></g></g>\n</g></g>\n<rect x=\"151\" y=\"86\" width=\"92\" height=\"150\" fill=\"url(#mn-sombra)\" clip-path=\"url(#mn-clip)\"/>\n<g stroke=\"#2b1a0d\" stroke-width=\"2\"><path d=\"M136 102h122v17H136z\" fill=\"#8a5a30\"/><path d=\"M140 119h15v117h-15zM239 119h15v117h-15z\" fill=\"#774b26\"/></g>\n<path d=\"M145 126v100M246 126v100M144 110h104\" stroke=\"#5a381b\" stroke-width=\"2\"/>\n<g class=\"mn-farol\"><circle cx=\"197\" cy=\"134\" r=\"34\" fill=\"url(#mn-luz)\"/><path d=\"M197 119v7\" stroke=\"#d5d9df\" stroke-width=\"2\"/><rect x=\"191\" y=\"126\" width=\"12\" height=\"15\" rx=\"3\" fill=\"#ffd76a\" stroke=\"#2b1a0d\" stroke-width=\"2\"/></g>\n<g fill=\"#b79f88\"><circle class=\"mn-polvo\" cx=\"268\" cy=\"232\" r=\"5\" style=\"animation-delay:0s\"/><circle class=\"mn-polvo\" cx=\"290\" cy=\"232\" r=\"5\" style=\"animation-delay:0.5s\"/><circle class=\"mn-polvo\" cx=\"314\" cy=\"232\" r=\"5\" style=\"animation-delay:1s\"/></g>";
+const NOMBRES = {extracciones: 'Extracciones', desarrollos: 'Desarrollos', volteos: 'Niveles', centroCostos: 'Centros de costo', personal: 'Personal', cartilla: 'Cartilla de contratos', catalogo: 'Catálogo de explosivos', inventario: 'Inventario', movimientos: 'Movimientos', vales: 'Vales'};
+let avance = {};
+function pantallaCarga(req) {
+  avance = {};
+  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  s.setAttribute('viewBox', '0 0 640 270'); s.setAttribute('class', 'mn'); s.setAttribute('aria-hidden', 'true'); s.innerHTML = ESCENA;
+  $('#main').replaceChildren(el('div', {class: 'carga'}, s, el('div', {class: 'carga-t'},
+    el('h2', null, 'Trayendo los datos de la mina'),
+    el('p', {id: 'cargaTxt', role: 'status'}, 'Conectando con SharePoint…'),
+    el('div', {class: 'carga-b', role: 'progressbar', 'aria-label': 'Listas leídas', 'aria-valuemin': '0', 'aria-valuemax': String(req.length), 'aria-valuenow': '0', id: 'cargaB'}, el('i')),
+    el('ul', {class: 'carga-l'}, req.map((l) => el('li', {id: 'cl-' + l}, NOMBRES[l] || l))))));
+}
+function progreso(lista, filas, fin) {
+  const li = document.getElementById('cl-' + lista);
+  if (!li) return;
+  if (fin) { li.className = fin; avance[lista] = 1; }
+  li.textContent = (NOMBRES[lista] || lista) + (fin === 'mal' ? ': no se pudo leer' : filas ? ' · ' + num(filas) : '');
+  const tot = li.parentNode.children.length, n = Object.keys(avance).length, b = $('#cargaB');
+  b.firstChild.style.transform = 'scaleX(' + n / tot + ')'; b.setAttribute('aria-valuenow', String(n));
+  if (fin) $('#cargaTxt').textContent = n === tot ? 'Preparando la pantalla…' : n + ' de ' + tot + ' listas revisadas';
+}
 function pantalla(titulo, texto, boton, girando) {
   $('#main').replaceChildren(el('div', {class: 'centro'}, girando ? el('div', {class: 'giro', 'aria-hidden': 'true'}) : null, el('h2', null, titulo), el('p', null, texto), boton || null));
 }
@@ -1337,11 +1405,11 @@ async function cargar(silencioso) {
   b.disabled = true; b.textContent = 'Actualizando…';
   const mod = modulo, req = REQ[mod];
   const nuevo = req.some((l) => !D[l]);
-  if (nuevo && !(mod === 'inicio' && REQ.inicio.some((l) => D[l]))) pantalla('Cargando datos', 'Leyendo las listas de SharePoint de este módulo…', null, true);
+  if (nuevo && !silencioso) pantallaCarga(req);
   try {
     /* «personal» es opcional para Polvorín: si falla, se sigue sin nombres de contratista */
     const fallos = [];
-    const leidas = await Promise.all(req.map((l) => leerLista(l).catch((e) => { if (mod === 'inicio') { fallos.push(e); return null; } if (l === 'personal' && mod === 'polvorin') return undefined; throw e; })));
+    const leidas = await Promise.all(req.map((l) => leerLista(l).then((f) => { progreso(l, f.length, 'ok'); return f; }, (e) => { progreso(l, 0, 'mal'); throw e; }).catch((e) => { if (mod === 'inicio') { fallos.push(e); return null; } if (l === 'personal' && mod === 'polvorin') return undefined; throw e; })));
     if (fallos.length === req.length) throw fallos[0];
     req.forEach((l, i) => { if (leidas[i]) { D[l] = leidas[i]; LEIDO[l] = Date.now(); } });
     if (D.catalogo && D.inventario && D.movimientos && D.vales) M = construir({catalogo: D.catalogo, inventario: D.inventario, movimientos: D.movimientos, vales: D.vales, personal: D.personal || []});
@@ -1357,14 +1425,15 @@ async function cargar(silencioso) {
     console.error(e);
     if (mod !== modulo) return;
     const txt = e.status === 403 || e.status === 401 ? 'Tu cuenta no tiene permiso para leer estas listas. Pide acceso de lectura al administrador del sitio ReporteDiarioMinas.' : e.status === 404 ? 'No se encontró el sitio o alguna de las listas. Puede que hayan cambiado de lugar.' : 'No se pudo conectar con SharePoint. Revisa tu conexión e inténtalo otra vez.';
-    if (!nuevo) {
+    if (!nuevo || silencioso) {
+      document.querySelectorAll('#main > .aviso').forEach((a) => a.remove());
       $('#main').prepend(el('div', {class: 'aviso', role: 'alert'}, `${txt} Se muestran los últimos datos cargados.`));
     } else {
       pantalla('No se pudieron cargar los datos', txt, el('button', {class: 'btn primario', type: 'button', onclick: () => cargar()}, 'Reintentar'));
     }
   } finally {
     cargando = false; b.disabled = false; b.textContent = 'Actualizar';
-    if (mod !== modulo && REQ[modulo].some((l) => !D[l])) setTimeout(() => cargar(), 0);
+    if (mod !== modulo) { if (REQ[modulo].some((l) => !D[l])) setTimeout(() => cargar(), 0); else { pintarTabs(); pintar(); marcarEstado(); } }
   }
 }
 async function arrancar() {
