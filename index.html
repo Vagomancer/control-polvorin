@@ -426,7 +426,7 @@ async function obtenerToken() {
 }
 async function graph(url, intento = 0) {
   const t = await obtenerToken();
-  const r = await fetch(url, {headers: {Authorization: `Bearer ${t}`, Accept: 'application/json'}});
+  const r = await fetch(url, {cache: 'no-store', headers: {Authorization: `Bearer ${t}`, Accept: 'application/json'}});
   if ((r.status === 429 || r.status === 503) && intento < 4) {
     const espera = Number(r.headers.get('Retry-After')) || 2 ** intento;
     await new Promise((ok) => setTimeout(ok, espera * 1000));
