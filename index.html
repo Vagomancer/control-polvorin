@@ -68,6 +68,30 @@ main{padding:20px 16px 40px;max-width:1500px;margin:0 auto}
 .tile .val{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1;letter-spacing:-.02em}
 .tile .val.peq{font-size:17px;font-weight:700}
 .tile .val.bad{color:var(--bad)}
+/* indicadores del inicio: estilo de tablero corporativo, plano y sobrio */
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:18px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 18px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.k-cab{display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:4px}
+.k-tit{font-size:13px;font-weight:600;color:var(--fg)}
+.k-per{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.k-val{font-size:40px;font-weight:600;line-height:1.05;letter-spacing:-.02em;color:var(--fg)}
+.k-val.chico{font-size:28px}
+.k-delta{font-size:12.5px;color:var(--muted)}
+.k-flecha{font-weight:600;color:var(--fg)}
+.k-flecha.sube{color:#2b6cb0}.k-flecha.baja{color:#6b7280}
+@media (prefers-color-scheme:dark){.k-flecha.sube{color:#7fb3ec}.k-flecha.baja{color:#a3abb7}}
+.k-pie{font-size:12.5px;display:flex;align-items:center;gap:6px;color:var(--muted)}
+.k-pie::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.k-ok{color:var(--ok)}.k-warn{color:var(--warn)}.k-bad{color:var(--bad)}.k-neu{color:var(--muted)}
+.k-neu::before{display:none}
+.k-graf{margin-top:auto;padding-top:6px}
+.k-spark{display:block;width:100%;height:44px}
+.k-spark .previo{fill:#cbd2dc}.k-spark .actual{fill:#2b6cb0}
+.k-spark rect:hover{fill:var(--accent)}
+@media (prefers-color-scheme:dark){.k-spark .previo{fill:#3a4554}.k-spark .actual{fill:#7fb3ec}}
+.k-ejes{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-top:3px}
+@media (max-width:1000px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.kpis{grid-template-columns:minmax(0,1fr)}}
 @keyframes sube{from{opacity:0;transform:translateY(8px)}}
 
 /* tarjetas y gráficos */
@@ -317,6 +341,31 @@ const ICONOS = {
   alerta: '<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>'
 };
 function icono(n) { const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '2'); s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round'); s.setAttribute('aria-hidden', 'true'); s.innerHTML = ICONOS[n] || ''; return s; }
+/* tarjeta de indicador: título, valor, variación contra el período anterior y minigráfico */
+function kpi(titulo, periodo, valor, o = {}) {
+  const partes = [el('div', {class: 'k-cab'}, el('span', {class: 'k-tit'}, titulo), periodo ? el('span', {class: 'k-per'}, periodo) : null),
+    el('div', {class: 'k-val' + (o.chico ? ' chico' : '')}, valor)];
+  if (o.delta) {
+    const [a, b] = o.delta, dif = a - b;
+    const txt = b ? `${dif >= 0 ? '+' : '−'}${Math.abs(Math.round(dif / b * 100))} %` : (a ? 'nuevo' : '0 %');
+    partes.push(el('div', {class: 'k-delta'}, el('span', {class: 'k-flecha ' + (dif > 0 ? 'sube' : dif < 0 ? 'baja' : 'igual')}, dif > 0 ? '▲' : dif < 0 ? '▼' : '■', ' ', txt), el('span', null, ` vs. 7 días anteriores (${num(b)})`)));
+  }
+  if (o.pie) partes.push(el('div', {class: 'k-pie k-' + o.pie[1]}, o.pie[0]));
+  if (o.serie) partes.push(minigrafico(o.serie, o.unidad));
+  return el('div', {class: 'kpi'}, partes);
+}
+function minigrafico(serie, unidad) {
+  const NS = 'http://www.w3.org/2000/svg', W = 240, H = 44, max = Math.max(...serie.map((x) => x[1]), 1), paso = W / serie.length;
+  const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', `0 0 ${W} ${H}`); s.setAttribute('preserveAspectRatio', 'none'); s.setAttribute('class', 'k-spark'); s.setAttribute('role', 'img');
+  s.setAttribute('aria-label', `Por día, últimos 14 días: ${serie.map((x) => x[1]).join(', ')}`);
+  serie.forEach(([d, v], k) => {
+    const h = Math.max(v ? 3 : 1.5, v / max * (H - 4)), r = document.createElementNS(NS, 'rect');
+    r.setAttribute('x', k * paso + 2); r.setAttribute('width', paso - 4); r.setAttribute('y', H - h); r.setAttribute('height', h); r.setAttribute('rx', 2);
+    r.setAttribute('class', k >= 7 ? 'actual' : 'previo');
+    const t = document.createElementNS(NS, 'title'); t.textContent = `${verFecha(d)}: ${v} ${unidad || ''}`; r.append(t); s.append(r);
+  });
+  return el('div', {class: 'k-graf'}, s, el('div', {class: 'k-ejes'}, el('span', null, '7 días anteriores'), el('span', null, 'Últimos 7 días')));
+}
 function tile(etiqueta, valor, ico, color, clase) {
   return el('div', {class: 'tile', style: `--c:var(${color})`}, el('span', {class: 'ico'}, icono(ico)), el('div', {class: 'et'}, etiqueta), el('div', {class: 'val' + (clase ? ' ' + clase : '')}, valor));
 }
@@ -557,11 +606,20 @@ function vistaInventario() {
   const activos = M.inventario.filter((i) => i.activo);
   const pend = M.vales.filter((v) => v.pendiente);
   const ult = M.movimientos[0];
-  r.append(el('div', {class: 'tiles'},
-    tile('Ítems activos', activos.length, 'inventario', '--info'),
-    tile('Vales pendientes de despacho', num(pend.length), 'vales', '--accent'),
-    tile('Ítems que no alcanzan para los pendientes', M.controles.faltante.length, 'alerta', M.controles.faltante.length ? '--bad' : '--ok', M.controles.faltante.length ? 'bad' : ''),
-    tile('Último movimiento', ult ? verFechaHora(ult.Fecha) : '—', 'reloj', '--ok', 'peq')
+  /* indicadores: últimos 7 días contra los 7 anteriores, con la serie diaria de 14 días */
+  const hoy = hoyLocal(), dia = (n) => fechaIso(new Date(Date.parse(hoy + 'T12:00:00Z') - n * 864e5 + 4 * 3600e3).toISOString());
+  const dias14 = Array.from({length: 14}, (_, k) => dia(13 - k)), corte7 = dias14[7];
+  const serie = (lista, f) => dias14.map((d) => [d, lista.filter((x) => x.fecha === d && f(x)).length]);
+  const kpiSerie = (lista, f) => { const s = serie(lista, f); const act = s.slice(7).reduce((a, x) => a + x[1], 0), ant = s.slice(0, 7).reduce((a, x) => a + x[1], 0); return {s, act, ant}; };
+  const sal = kpiSerie(M.movimientos, (m) => m.firmada < 0), ing = kpiSerie(M.movimientos, (m) => m.firmada > 0), sol = kpiSerie(M.vales, () => true);
+  const antiguos = M.controles.antiguos.length, falt = M.controles.faltante.length;
+  r.append(el('div', {class: 'kpis'},
+    kpi('Salidas registradas', 'últimos 7 días', num(sal.act), {delta: [sal.act, sal.ant], serie: sal.s, unidad: 'salidas'}),
+    kpi('Ingresos registrados', 'últimos 7 días', num(ing.act), {delta: [ing.act, ing.ant], serie: ing.s, unidad: 'ingresos'}),
+    kpi('Líneas de vale solicitadas', 'últimos 7 días', num(sol.act), {delta: [sol.act, sol.ant], serie: sol.s, unidad: 'líneas'}),
+    kpi('Vales pendientes de despacho', 'a la fecha', num(pend.length), {pie: antiguos ? [`${num(antiguos)} con más de ${CONFIG.diasPendienteAntiguo} días`, 'warn'] : ['Ninguno atrasado', 'ok']}),
+    kpi('Ítems que no alcanzan', `de ${activos.length} ítems activos`, num(falt), {pie: falt ? ['Lo pedido supera el saldo', 'bad'] : ['Todo el saldo cubre lo pedido', 'ok']}),
+    kpi('Último movimiento', ult ? (ult.Tipo || '') : '', ult ? verFecha(ult.fecha) : '—', {chico: true, pie: ult ? [`${ult.hora ? ult.hora + ' · ' : ''}${ult.item || ult.Material || ''}`, 'neu'] : null})
   ));
   const conSaldo = activos.slice().sort((a, b) => (b.pendiente / (b.saldo || 1)) - (a.pendiente / (a.saldo || 1)));
   const hace30 = fechaIso(new Date(Date.now() - 30 * 864e5).toISOString());
