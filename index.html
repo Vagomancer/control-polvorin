@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Control de Polvorín</title>
+<title>Reporte Mina Choroma</title>
 <style>
 :root{
   --bg:#eef1f5;--panel:#fff;--panel2:#f5f7fa;--fg:#141a23;--muted:#5d6878;--line:#e1e6ed;
@@ -90,8 +90,9 @@ main{padding:20px 16px 40px;max-width:1500px;margin:0 auto}
 .k-spark rect:hover{fill:var(--accent)}
 @media (prefers-color-scheme:dark){.k-spark .previo{fill:#3a4554}.k-spark .actual{fill:#7fb3ec}}
 .k-ejes{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-top:3px}
-@media (max-width:1000px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:620px){.kpis{grid-template-columns:minmax(0,1fr)}}
+.kpis.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:1000px){.kpis,.kpis.k4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.kpis,.kpis.k4{grid-template-columns:minmax(0,1fr)}}
 @keyframes sube{from{opacity:0;transform:translateY(8px)}}
 
 /* tarjetas y gráficos */
@@ -188,6 +189,54 @@ details.alerta .cuerpo{padding:0 16px 16px}
 @keyframes gira{to{transform:rotate(360deg)}}
 .aviso{border:1px solid var(--line);border-left:4px solid var(--bad);background:var(--bad-soft);padding:10px 14px;border-radius:10px;margin-bottom:14px}
 .vacio{padding:26px;text-align:center;color:var(--muted)}
+
+/* módulos */
+.subtabs{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px;margin-bottom:16px}
+.subtabs button{border:0;background:none;padding:7px 14px;border-radius:7px;cursor:pointer;color:var(--muted);font-weight:600;display:inline-flex;gap:6px;align-items:center}
+.subtabs button:hover{color:var(--fg);background:var(--panel2)}
+.subtabs button[aria-selected=true]{background:var(--fg);color:var(--panel)}
+.k-u{font-size:15px;font-weight:600;color:var(--muted);margin-left:2px}
+.cab-tabla{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
+.calc{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--muted)}
+.aviso.suave{border-left-color:var(--warn);background:var(--warn-soft);display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+.chk-in{display:inline-flex;align-items:center;gap:4px;font-weight:600;cursor:pointer}
+.tu1{background:#2b6cb0}.tu2{background:#d97706}.tu3{background:#0e9f6e}
+@media (prefers-color-scheme:dark){.tu1{background:#4a8bd8}.tu2{background:#cc8010}.tu3{background:#1a9e70}}
+.cols.apil .col{display:flex;flex-direction:column;justify-content:flex-end}
+.cols.apil::before{display:none}
+.pila{display:flex;flex-direction:column;gap:2px;min-height:2px}
+.pila i{display:block;min-height:2px}
+.pila i:first-child{border-radius:4px 4px 0 0}
+.tit-seccion{margin:8px 0 12px}
+.matriz td.celda{background:color-mix(in srgb,#2b6cb0 calc(var(--a) * 38%),transparent)!important}
+.niveles{display:grid;gap:14px}
+details.nivel{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh-1)}
+details.nivel>summary{list-style:none;cursor:pointer;padding:12px 16px;display:flex;gap:10px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+details.nivel>summary::-webkit-details-marker{display:none}
+.n-tit{font-weight:800;font-size:16px}
+.labores{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px;padding:14px 16px}
+.labor{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--panel2)}
+.l-cab{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px}
+.labor ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.labor li{display:grid;grid-template-columns:auto 1fr;gap:0 8px;align-items:baseline;font-size:13px}
+.labor li .sub{grid-column:2;font-size:11.5px}
+.p-nom{font-weight:600}
+.chip-t{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:0 5px;line-height:1.6}
+.c-buscar{width:100%;max-width:640px;font-size:15px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);margin-bottom:12px}
+.c-buscar:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.c-lista{display:grid;gap:6px}
+.c-item{border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden}
+.c-item.abierta{border-color:var(--accent);box-shadow:var(--sh-1)}
+.c-cab{width:100%;display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;background:none;border:0;padding:10px 14px;cursor:pointer}
+.c-cab:hover{background:var(--panel2)}
+.c-cod{font-weight:800;font-family:ui-monospace,Consolas,monospace}
+.c-nom{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-chips{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.c-ficha{padding:4px 14px 14px;border-top:1px solid var(--line);background:var(--panel2)}
+.c-ficha dl{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px 18px;margin:10px 0 0}
+.c-ficha dt{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+.c-ficha dd{margin:2px 0 0;font-size:14px}
+@media (max-width:700px){.c-cab{grid-template-columns:80px minmax(0,1fr)}.c-chips{display:none}}
 [hidden]{display:none!important}
 @media (max-width:640px){header.top{padding:14px 16px 58px}h1{font-size:18px}.barra{grid-template-columns:1fr auto}.barra .pista{grid-column:1/-1;grid-row:2}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -197,7 +246,7 @@ details.alerta .cuerpo{padding:0 16px 16px}
 <body>
 <header class="top">
   <div class="marca"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#1b1203" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/><path d="M12 8v2"/></svg></span>
-    <div><h1>Control de Polvorín</h1><div class="sub" id="estado">Sistema de Producción Mina · Choroma</div></div></div>
+    <div><h1>Reporte Mina Choroma</h1><div class="sub" id="estado">Sistema de Producción Mina · Choroma</div></div></div>
   <div class="acciones" id="acciones" hidden>
     <span class="usuario" id="usuario"></span>
     <button class="btn primario" id="btnActualizar" type="button">Actualizar</button>
@@ -286,7 +335,12 @@ const CONFIG = {
     inventario: 'b53cbb33-846a-4a64-83f3-47ec904301b4',
     movimientos: '9b8760b6-546c-4c7c-80e9-33c2505d182a',
     vales: '02998730-5cd1-44cd-a6f9-10776b4a6023',
-    personal: 'd3f400fb-5cc3-4b8a-a565-1c70e20da7dd'
+    personal: 'd3f400fb-5cc3-4b8a-a565-1c70e20da7dd',
+    desarrollos: 'b327b7a3-d9f6-4c0d-8f9f-d267f029e972',
+    extracciones: 'b60e2ad8-7333-4631-adfc-1ec9ecbd1058',
+    cartilla: '7cd4932a-87b3-4dc9-9832-34201d01315d',
+    centroCostos: '815973a6-9458-4728-a988-36d5e207d6ec',
+    volteos: '8675f4d6-caa7-4494-bca5-2b8a30c2c45b'
   },
   diasPendienteAntiguo: 2,
   minutosAuto: 10
@@ -296,7 +350,20 @@ const CAMPOS = {
   inventario: ['Title','CodigoKardex','Unidad','Saldo','SaldoCorte','FechaCorte','Activo'],
   movimientos: ['Title','Fecha','Tipo','Item','Material','Cantidad','Unidad','SaldoAntes','SaldoDespues','Motivo','Destinatario','RegistradoPor','IdVale','SeccionalMina','SuperintendenteMina','EntregadoPor','CantidadFirmada','ClaveMov','Turno','CuentaContable','Labor','CodKardex','Factura','Origen'],
   vales: ['Title','CodigoVale','Fecha','Turno','Contratista','ContratistaRefLookupId','Categoria','Material','Unidad','Cantidad','CantidadDespachada','Labor','EncargadodeRegistro','Destino','Cuenta','CodKardex','FechadeDespacho','Estado'],
-  personal: ['NombresyApellidos']
+  personal: ['NombresyApellidos','Id_Ficha','CTTo','Cargo','Categor_x00ed_a','Nivel','Categor_x00ed_aLabor','Categor_x00ed_aLabor0','Turno','Categor_x00ed_aCabecilla','TipodeLabor'],
+  desarrollos: ['FechadeRegistro','Turno','JefedePunta','Longitud','FactordeEficiencia','AvanceTeorico','TD','TP','Cantidad_x0028_Cuadros_x002c_Met','Observaciones','LaborLookupId','NivelLookupId','ContratistaLookupId','Contratista2LookupId','C_x00f3_digoContratoLookupId'],
+  extracciones: ['FechaRegistro','N_x00b0_Turno','JefedePunta','TipodeExtracci_x00f3_n','A','Rajo','DeLabor','N_x00b0_CarrosMIN','N_x00b0_CarrosCaja','volteo0LookupId','CentrodeCostoLookupId','Contratista1LookupId','Contratista2LookupId','C_x00f3_digoContratoLookupId'],
+  cartilla: ['C_x00f3_digo','Categor_x00ed_a','SubCategor_x00ed_a','Descripci_x00f3_ndeTarea','Unidad','CostoUnitario','AvanceDesde','AvanceHasta','CostoUnitario2','Categor_x00ed_aMacro','Categor_x00ed_aMicro'],
+  centroCostos: ['id_centro_costo','T_x00ed_tuloCC','Descripci_x00f3_nCC','Clase','SubClase','SubClase_x002d_1'],
+  volteos: ['NivelVolteo']
+};
+/* listas que necesita cada módulo */
+const REQ = {
+  produccion: ['extracciones', 'volteos', 'centroCostos', 'personal', 'cartilla'],
+  desarrollos: ['desarrollos', 'volteos', 'centroCostos', 'personal', 'cartilla'],
+  personal: ['personal'],
+  polvorin: ['catalogo', 'inventario', 'movimientos', 'vales', 'personal'],
+  consultas: ['cartilla', 'centroCostos']
 };
 const TIPOS = ['Ingreso Compra','Ingreso Devolución','Ingreso Préstamo','Ingreso Traslado','Salida por Vale','Salida Consumo Directo','Salida Préstamo','Salida Devolución','Salida Traslado','Salida por Vencimiento','Salida Dique de Colas','Ajuste'];
 const SCOPES = ['https://graph.microsoft.com/Sites.Read.All'];
@@ -338,7 +405,11 @@ const ICONOS = {
   vales: '<path d="M4 4h16v16l-3-2-3 2-2-2-2 2-3-2-3 2z"/><path d="M8 9h8M8 13h6"/>',
   control: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/>',
   reloj: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
-  alerta: '<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>'
+  alerta: '<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>',
+  produccion: '<path d="M3 17h18"/><path d="M5 17l2-6h10l2 6"/><circle cx="8" cy="19" r="1.5"/><circle cx="16" cy="19" r="1.5"/><path d="M9 11l1-4h4l1 4"/>',
+  desarrollos: '<path d="M3 20h18"/><path d="M5 20V10a7 7 0 0 1 14 0v10"/><path d="M12 13v7"/>',
+  personal: '<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.5A5 5 0 0 1 21 19"/>',
+  consultas: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/><path d="M8 11h6"/>'
 };
 function icono(n) { const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '2'); s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round'); s.setAttribute('aria-hidden', 'true'); s.innerHTML = ICONOS[n] || ''; return s; }
 /* tarjeta de indicador: título, valor, variación contra el período anterior y minigráfico */
@@ -589,15 +660,35 @@ let fMov = inicialMov(), fVal = inicialVal(), fInv = inicialInv();
 const abiertos = new Set();
 
 function totalAlertas() { return Object.values(M.controles).filter((lista) => lista.length > 0).length; }
+/* módulos: cada uno lee solo sus listas y las guarda en D */
+const D = {}, LEIDO = {};
+let MD = null, ME = null, modulo = 'produccion';
+try { const m = localStorage.getItem('rm-modulo'); if (m && REQ[m]) modulo = m; } catch (e) {}
+const MODULOS = [['produccion', 'Producción', 'produccion'], ['desarrollos', 'Desarrollos', 'desarrollos'], ['personal', 'Personal', 'personal'], ['polvorin', 'Polvorín', 'inventario'], ['consultas', 'Contratos y centros de costo', 'consultas']];
 function pintarTabs() {
-  const defs = [['inventario', 'Inventario'], ['movimientos', 'Movimientos'], ['vales', 'Vales de mina'], ['control', 'Control']];
-  $('#tabs').replaceChildren(...defs.map(([id, t]) => el('button', {type: 'button', role: 'tab', 'aria-selected': String(pestana === id), onclick: () => irA(id)}, icono(id), t, id === 'control' && totalAlertas() ? el('span', {class: 'cuenta'}, totalAlertas()) : null, id === 'vales' && M.vales.some((v) => v.pendiente) ? el('span', {class: 'cuenta', style: 'background:var(--warn)'}, M.vales.filter((v) => v.pendiente).length) : null)));
+  $('#tabs').replaceChildren(...MODULOS.map(([id, t, ic]) => el('button', {type: 'button', role: 'tab', 'aria-selected': String(modulo === id), onclick: () => irModulo(id)}, icono(ic), t,
+    id === 'polvorin' && M && totalAlertas() ? el('span', {class: 'cuenta'}, totalAlertas()) : null)));
   $('#tabs').hidden = false;
 }
-function irA(id) { pestana = id; pintarTabs(); pintar(); window.scrollTo(0, 0); }
+function irModulo(id) {
+  modulo = id; try { localStorage.setItem('rm-modulo', id); } catch (e) {}
+  pintarTabs(); window.scrollTo(0, 0);
+  if (REQ[id].some((l) => !D[l])) cargar(); else { pintar(); marcarEstado(); }
+}
+function irA(id) { pestana = id; pintar(); window.scrollTo(0, 0); }
 function pintar() {
-  const f = {inventario: vistaInventario, movimientos: vistaMovimientos, vales: vistaVales, control: vistaControl}[pestana];
-  $('#main').replaceChildren(f());
+  let vista;
+  if (modulo === 'polvorin') {
+    const defs = [['inventario', 'Inventario'], ['movimientos', 'Movimientos'], ['vales', 'Vales de mina', M.vales.filter((v) => v.pendiente).length || null], ['control', 'Control', totalAlertas() || null]];
+    vista = el('div', null, subtabs(defs, pestana, irA), {inventario: vistaInventario, movimientos: vistaMovimientos, vales: vistaVales, control: vistaControl}[pestana]());
+  } else if (modulo === 'consultas') {
+    vista = el('div', null, subtabs([['cartilla', 'Cartilla de contratos'], ['cc', 'Centro de costos']], consulta, (id) => { consulta = id; pintar(); }), vistaConsultas());
+  } else vista = {produccion: vistaExtracciones, desarrollos: vistaDesarrollos, personal: vistaPersonal}[modulo]();
+  $('#main').replaceChildren(vista);
+}
+function marcarEstado() {
+  const t = Math.min(...REQ[modulo].map((l) => LEIDO[l] || Date.now()));
+  $('#estado').textContent = `Datos de SharePoint · actualizado ${new Date(t).toLocaleString('es-BO', {dateStyle: 'short', timeStyle: 'short'})}`;
 }
 
 /* ---- Inventario ---- */
@@ -845,6 +936,303 @@ function vistaControl() {
   return r;
 }
 
+/* ==== Módulos de mina: producción, desarrollos, personal y consultas ==== */
+const FACTOR_TMH = 1.5;
+const TURNOS = ['1ro', '2do', '3ro'];
+const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+const verMes = (m) => { if (!m) return ''; const [a, n] = m.split('-'); return `${MESES[Number(n) - 1]} ${a}`; };
+const mesActual = () => hoyLocal().slice(0, 7);
+const ent = (v) => Number(v) || 0;
+const lk = (v) => (v === null || v === undefined || v === '' ? null : Number(v));
+
+/* catálogos que usan varios módulos */
+function catalogos() {
+  const per = new Map((D.personal || []).map((p) => [p.ID, (p.NombresyApellidos || '').trim()]));
+  const niv = new Map((D.volteos || []).map((v) => [v.ID, v.NivelVolteo]));
+  const cc = new Map((D.centroCostos || []).map((c) => [c.ID, c]));
+  const cart = new Map((D.cartilla || []).map((c) => [c.ID, c]));
+  const labor = (id) => { const c = cc.get(id); return c ? `${c.id_centro_costo} · ${c.Descripci_x00f3_nCC || c.T_x00ed_tuloCC || ''}`.trim() : (id ? `Labor ${id}` : ''); };
+  const persona = (id) => (id ? per.get(id) || `Persona ${id}` : '');
+  const contrato = (id) => { const c = cart.get(id); return c ? c.C_x00f3_digo : (id ? `ID ${id}` : ''); };
+  const nivel = (id) => (id ? (niv.get(id) ?? `Nivel ${id}`) : '');
+  return {labor, persona, contrato, nivel, cc, cart};
+}
+
+/* ---- Desarrollos: avance teórico = longitud × factor de eficiencia ---- */
+function construirDesarrollos() {
+  const c = catalogos();
+  return (D.desarrollos || []).map((d) => {
+    const longitud = ent(d.Longitud), factor = d.FactordeEficiencia === null || d.FactordeEficiencia === undefined ? null : Number(d.FactordeEficiencia);
+    const avance = factor === null ? ent(d.AvanceTeorico) : redondea3(longitud * factor);
+    return {...d, fecha: fechaIso(d.FechadeRegistro), turno: d.Turno || '', jefe: (d.JefedePunta || '').trim(), longitud, factor, avance,
+      nivel: c.nivel(lk(d.NivelLookupId)), labor: c.labor(lk(d.LaborLookupId)), contratista: c.persona(lk(d.ContratistaLookupId)), contratista2: c.persona(lk(d.Contratista2LookupId)),
+      contrato: c.contrato(lk(d.C_x00f3_digoContratoLookupId)), cantidad: ent(d.Cantidad_x0028_Cuadros_x002c_Met)};
+  }).sort((a, b) => b.fecha.localeCompare(a.fecha) || TURNOS.indexOf(b.turno) - TURNOS.indexOf(a.turno) || b.ID - a.ID);
+}
+const redondea3 = (v) => Math.round((v + Number.EPSILON) * 1000) / 1000;
+
+/* ---- Extracciones: producción = carros MIN × 1,5 cuando el tipo es principal y A es superficie ---- */
+const esSuperficie = (a, variantes) => { const s = norm(a).trim(); return s === 'superficie' || (variantes && /^su\w*f\w*cies?$/.test(s)); };
+function construirExtracciones() {
+  const c = catalogos();
+  return (D.extracciones || []).map((x) => {
+    const principal = x.TipodeExtracci_x00f3_n === 'Extracción Principal';
+    const exacto = principal && norm(x.A).trim() === 'superficie', variante = principal && !exacto && esSuperficie(x.A, true);
+    const carros = ent(x.N_x00b0_CarrosMIN);
+    return {...x, fecha: fechaIso(x.FechaRegistro), turno: x.N_x00b0_Turno || '', jefe: (x.JefedePunta || '').trim(), tipo: x.TipodeExtracci_x00f3_n || '', destino: (x.A || '').trim(),
+      nivel: c.nivel(lk(x.volteo0LookupId)), labor: c.labor(lk(x.CentrodeCostoLookupId)), contratista: c.persona(lk(x.Contratista1LookupId)), contratista2: c.persona(lk(x.Contratista2LookupId)),
+      contrato: c.contrato(lk(x.C_x00f3_digoContratoLookupId)), carros, carrosCaja: ent(x.N_x00b0_CarrosCaja), principal, exacto, variante};
+  }).sort((a, b) => b.fecha.localeCompare(a.fecha) || TURNOS.indexOf(b.turno) - TURNOS.indexOf(a.turno) || b.ID - a.ID);
+}
+
+/* ---- utilidades de vista compartidas ---- */
+function subtabs(defs, actual, ir) {
+  return el('div', {class: 'subtabs', role: 'tablist'}, defs.map(([id, t, n]) => el('button', {type: 'button', role: 'tab', 'aria-selected': String(actual === id), onclick: () => ir(id)}, t, n ? el('span', {class: 'cuenta'}, n) : null)));
+}
+function mesesDe(filas) { return unicos(filas.map((f) => f.fecha && f.fecha.slice(0, 7))).reverse(); }
+function filtroPeriodo(f, filas) {
+  return filas.filter((r) => {
+    if (f.mes && !(r.fecha || '').startsWith(f.mes)) return false;
+    if (f.dia && r.fecha !== f.dia) return false;
+    if (f.turno && r.turno !== f.turno) return false;
+    if (f.jefe && r.jefe !== f.jefe) return false;
+    if (f.nivel && r.nivel !== f.nivel) return false;
+    return true;
+  });
+}
+function camposPeriodo(f, filas, set, extra) {
+  return [
+    campoSelect('Mes', mesesDe(filas).map((m) => [m, verMes(m)]), f.mes, (v) => { f.mes = v; f.dia = ''; set(); }, 'Todos'),
+    campoFecha('Día', f.dia, (v) => { f.dia = v; if (v) f.mes = v.slice(0, 7); set(); }),
+    campoSelect('Turno', TURNOS, f.turno, (v) => { f.turno = v; set(); }),
+    campoSelect('Jefe de punta', unicos(filas.map((r) => r.jefe)), f.jefe, (v) => { f.jefe = v; set(); }),
+    campoSelect('Nivel', unicos(filas.map((r) => r.nivel)).sort((a, b) => Number(b) - Number(a)), f.nivel, (v) => { f.nivel = v; set(); }),
+    extra || null
+  ];
+}
+/* columnas apiladas por día y turno */
+function columnasTurno(filas, valor, unidad) {
+  const dias = new Map();
+  for (const r of filas) { if (!r.fecha) continue; const d = dias.get(r.fecha) || {1: 0, 2: 0, 3: 0}; const t = TURNOS.indexOf(r.turno) + 1 || 1; d[t] += valor(r); dias.set(r.fecha, d); }
+  const orden = [...dias.keys()].sort().slice(-62);
+  if (!orden.length) return el('div', {class: 'vacio-g'}, 'Sin registros con estos filtros.');
+  const tot = (d) => d[1] + d[2] + d[3], max = Math.max(...orden.map((k) => tot(dias.get(k))), 0.0001);
+  return el('div', null,
+    el('div', {class: 'cols apil'}, orden.map((k) => { const d = dias.get(k);
+      return el('div', {class: 'col', title: `${verFecha(k)} · total ${num(redondea(tot(d)))} ${unidad}\n1ro: ${num(redondea(d[1]))} · 2do: ${num(redondea(d[2]))} · 3ro: ${num(redondea(d[3]))}`},
+        el('div', {class: 'pila', style: `height:${tot(d) / max * 100}%`}, [3, 2, 1].map((t) => d[t] ? el('i', {class: 'tu' + t, style: `flex:${d[t]}`}) : null))); })),
+    el('div', {class: 'ejes'}, el('span', null, verFecha(orden[0])), el('span', null, verFecha(orden[orden.length - 1]))),
+    leyenda([['tu1', 'Turno 1ro'], ['tu2', 'Turno 2do'], ['tu3', 'Turno 3ro']]));
+}
+function sumaPor(filas, clave, valor, max = 10) {
+  const m = new Map(); filas.forEach((r) => { const k = clave(r); if (!k) return; m.set(k, (m.get(k) || 0) + valor(r)); });
+  return [...m].filter(([, v]) => v).sort((a, b) => b[1] - a[1]).slice(0, max);
+}
+function barrasSuma(pares, unidad, cls = 's-info') { return barras(pares.map(([k, v]) => ({lb: String(k), partes: [[v, cls]], texto: el('span', null, num(redondea(v)), ' ', el('small', null, unidad))})), 'Sin datos con estos filtros.'); }
+
+/* ---- Vista Desarrollos ---- */
+let fDes = {mes: null, dia: '', turno: '', jefe: '', nivel: '', texto: ''};
+function vistaDesarrollos() {
+  const todas = MD;
+  if (fDes.mes === null) fDes.mes = mesesDe(todas)[0] || '';
+  const r = el('div'), zona = el('div');
+  const aplicar = () => {
+    const q = norm(fDes.texto);
+    const filas = filtroPeriodo(fDes, todas).filter((d) => !q || [d.labor, d.contratista, d.contratista2, d.contrato, d.Observaciones, d.nivel].some((x) => norm(x).includes(q)));
+    const conAv = filas.filter((d) => d.longitud > 0);
+    const totAv = sumar(filas, (d) => d.avance), totLong = sumar(filas, (d) => d.longitud);
+    const factores = unicos(filas.map((d) => d.factor).filter((v) => v !== null));
+    const dias = unicos(filas.map((d) => d.fecha));
+    const porDia = new Map();
+    filas.forEach((d) => { const x = porDia.get(d.fecha) || {fecha: d.fecha, long: 0, av: 0, n: 0, t: {}}; x.long += d.longitud; x.av += d.avance; x.n++; x.t[d.turno] = (x.t[d.turno] || 0) + d.avance; porDia.set(d.fecha, x); });
+    zona.replaceChildren(
+      el('div', {class: 'kpis k4'},
+        kpi('Avance teórico', fDes.dia ? verFecha(fDes.dia) : verMes(fDes.mes) || 'todo el periodo', el('span', null, num(redondea(totAv)), el('small', {class: 'k-u'}, ' m')), {pie: [`${num(dias.length)} días con registro`, 'neu']}),
+        kpi('Longitud perforada', 'suma de longitudes', el('span', null, num(redondea(totLong)), el('small', {class: 'k-u'}, ' m')), {pie: [`${num(conAv.length)} registros con avance`, 'neu']}),
+        kpi('Factor de eficiencia', 'aplicado al avance', factores.length === 1 ? num(factores[0]) : factores.length ? `${num(Math.min(...factores))}–${num(Math.max(...factores))}` : '—', {pie: ['Avance teórico = longitud × factor', 'neu']}),
+        kpi('Promedio diario', 'avance teórico por día', el('span', null, num(dias.length ? redondea(totAv / dias.length) : 0), el('small', {class: 'k-u'}, ' m')), {pie: [`${num(filas.length)} registros en total`, 'neu']})),
+      el('div', {class: 'graficos'},
+        grafico('Avance teórico por día', 'Metros por día, apilados por turno. Pasa el mouse por una columna para ver el detalle.', columnasTurno(filas, (d) => d.avance, 'm')),
+        grafico('Avance teórico por jefe de punta', 'Metros con los filtros elegidos.', barrasSuma(sumaPor(filas, (d) => d.jefe, (d) => d.avance), 'm'))),
+      el('div', {class: 'graficos'},
+        grafico('Por labor', 'Las 10 labores con más avance.', barrasSuma(sumaPor(filas, (d) => d.labor, (d) => d.avance), 'm', 's-ok')),
+        grafico('Por contratista', 'Los 10 contratistas con más avance.', barrasSuma(sumaPor(filas, (d) => d.contratista, (d) => d.avance), 'm', 's-warn'))),
+      el('div', {class: 'tarjeta'}, el('h2', null, 'Avance teórico de cada día'), el('p', {class: 'nota'}, 'Suma de cada día con los filtros elegidos. El avance de cada registro es su longitud multiplicada por el factor de eficiencia.'),
+        tabla([
+          {k: 'fecha', t: 'Fecha', nw: true, ver: (x) => verFecha(x.fecha), csv: (x) => verFecha(x.fecha)},
+          ...TURNOS.map((t) => ({k: 't' + t, t: 'Turno ' + t, num: true, ord: (x) => x.t[t] || 0, ver: (x) => (x.t[t] ? num(redondea(x.t[t])) : '—')})),
+          {k: 'long', t: 'Longitud (m)', num: true, ver: (x) => num(redondea(x.long))},
+          {k: 'av', t: 'Avance teórico (m)', num: true, ver: (x) => el('b', null, num(redondea(x.av)))},
+          {k: 'n', t: 'Registros', num: true}
+        ], [...porDia.values()].sort((a, b) => b.fecha.localeCompare(a.fecha)), {lote: 62})),
+      el('div', {class: 'tarjeta'}, el('div', {class: 'cab-tabla'}, el('div', null, el('h2', null, 'Registros de desarrollos'), el('p', {class: 'nota'}, 'Cada fila muestra el cálculo de su avance teórico.')),
+        el('button', {class: 'btn', type: 'button', onclick: () => descargarCsv('desarrollos.csv', COL_DES, filas)}, 'Descargar CSV')), tabla(COL_DES, filas)));
+  };
+  r.append(el('div', {class: 'filtros'}, camposPeriodo(fDes, todas, aplicarYa), campoBuscar('Buscar', fDes.texto, (v) => { fDes.texto = v; aplicar(); }, 'Labor, contratista, contrato…'),
+    el('button', {class: 'btn', type: 'button', onclick: () => { fDes = {mes: null, dia: '', turno: '', jefe: '', nivel: '', texto: ''}; pintar(); }}, 'Limpiar')), zona);
+  function aplicarYa() { pintar(); }
+  aplicar();
+  return r;
+}
+const COL_DES = [
+  {k: 'fecha', t: 'Fecha', nw: true, ver: (d) => verFecha(d.fecha), csv: (d) => verFecha(d.fecha)},
+  {k: 'turno', t: 'Turno'},
+  {k: 'jefe', t: 'Jefe de punta'},
+  {k: 'nivel', t: 'Nivel'},
+  {k: 'labor', t: 'Labor'},
+  {k: 'contratista', t: 'Contratista'},
+  {k: 'TD', t: 'TD', num: true},
+  {k: 'TP', t: 'TP', num: true},
+  {k: 'longitud', t: 'Longitud (m)', num: true, ver: (d) => num(d.longitud)},
+  {k: 'factor', t: 'Factor de eficiencia', num: true, ver: (d) => num(d.factor)},
+  {k: 'calculo', t: 'Cálculo', nw: true, ord: (d) => d.avance, ver: (d) => el('span', {class: 'calc'}, `${num(d.longitud)} × ${num(d.factor)}`), csv: (d) => `${num(d.longitud)} x ${num(d.factor)}`},
+  {k: 'avance', t: 'Avance teórico (m)', num: true, ver: (d) => el('b', null, num(d.avance))},
+  {k: 'cantidad', t: 'Cantidad (cuadros, metros)', num: true, ver: (d) => (d.cantidad ? num(d.cantidad) : '—')},
+  {k: 'contrato', t: 'Código contrato', nw: true},
+  {k: 'Observaciones', t: 'Observaciones'}
+];
+
+/* ---- Vista Producción (extracciones) ---- */
+let fExt = {mes: null, dia: '', turno: '', jefe: '', nivel: '', tipo: '', variantes: true, texto: ''};
+function vistaExtracciones() {
+  const todas = ME;
+  if (fExt.mes === null) fExt.mes = mesesDe(todas)[0] || '';
+  const r = el('div'), zona = el('div');
+  const cuenta = (x) => x.exacto || (fExt.variantes && x.variante);
+  const tmh = (x) => (cuenta(x) ? x.carros * FACTOR_TMH : 0);
+  const aplicar = () => {
+    const q = norm(fExt.texto);
+    const filas = filtroPeriodo(fExt, todas).filter((x) => (!fExt.tipo || x.tipo === fExt.tipo) && (!q || [x.labor, x.contratista, x.contratista2, x.contrato, x.destino, x.Rajo].some((v) => norm(v).includes(q))));
+    const prod = filas.filter(cuenta), carros = sumar(prod, (x) => x.carros), total = redondea(carros * FACTOR_TMH);
+    const dias = unicos(prod.map((x) => x.fecha)), ultimo = dias[dias.length - 1];
+    const tmhUlt = ultimo ? redondea(sumar(prod.filter((x) => x.fecha === ultimo), (x) => x.carros) * FACTOR_TMH) : 0;
+    const variantes = filas.filter((x) => x.variante);
+    zona.replaceChildren(
+      el('div', {class: 'kpis k4'},
+        kpi('Producción', fExt.dia ? verFecha(fExt.dia) : verMes(fExt.mes) || 'todo el periodo', el('span', null, num(total), el('small', {class: 'k-u'}, ' TMH')), {pie: [`${num(carros)} carros MIN × ${num(FACTOR_TMH)}`, 'neu']}),
+        kpi('Producción del último día', ultimo ? verFecha(ultimo) : 'sin registros', el('span', null, num(tmhUlt), el('small', {class: 'k-u'}, ' TMH')), {pie: [ultimo ? `${num(prod.filter((x) => x.fecha === ultimo).length)} registros` : '—', 'neu']}),
+        kpi('Promedio diario', 'TMH por día con producción', el('span', null, num(dias.length ? redondea(total / dias.length) : 0), el('small', {class: 'k-u'}, ' TMH')), {pie: [`${num(dias.length)} días`, 'neu']}),
+        kpi('Registros que cuentan', 'principal y A = superficie', num(prod.length), {pie: [`de ${num(filas.length)} registros de extracción`, 'neu']})),
+      variantes.length ? el('div', {class: 'aviso suave'}, el('b', null, `${num(variantes.length)} registros `), `tienen «A» escrito de otra forma (${unicos(variantes.map((x) => `«${x.A}»`)).join(', ')}). `,
+        el('label', {class: 'chk-in'}, el('input', {type: 'checkbox', checked: fExt.variantes, onchange: (e) => { fExt.variantes = e.target.checked; aplicar(); }}), ' Contarlos como superficie')) : null,
+      el('div', {class: 'graficos'},
+        grafico('Producción por día', 'TMH por día, apiladas por turno. Solo cuentan los registros de extracción principal con A = superficie.', columnasTurno(prod, (x) => x.carros * FACTOR_TMH, 'TMH')),
+        grafico('Producción por nivel', 'TMH con los filtros elegidos.', barrasSuma(sumaPor(prod, (x) => (x.nivel !== '' ? 'Nivel ' + x.nivel : ''), (x) => x.carros * FACTOR_TMH), 'TMH'))),
+      el('div', {class: 'graficos'},
+        grafico('Producción por labor', 'Las 10 labores con más TMH.', barrasSuma(sumaPor(prod, (x) => x.labor, (x) => x.carros * FACTOR_TMH), 'TMH', 's-ok')),
+        grafico('Producción por contratista', 'Los 10 contratistas con más TMH.', barrasSuma(sumaPor(prod, (x) => x.contratista, (x) => x.carros * FACTOR_TMH), 'TMH', 's-warn'))),
+      el('div', {class: 'tarjeta'}, el('div', {class: 'cab-tabla'}, el('div', null, el('h2', null, 'Registros de extracción'), el('p', {class: 'nota'}, 'Todos los tipos de extracción. La columna «Producción» muestra las TMH solo en los registros que cuentan.')),
+        el('button', {class: 'btn', type: 'button', onclick: () => descargarCsv('extracciones.csv', COL_EXT(tmh, cuenta), filas)}, 'Descargar CSV')), tabla(COL_EXT(tmh, cuenta), filas)));
+  };
+  r.append(el('div', {class: 'filtros'}, camposPeriodo(fExt, todas, () => pintar(), campoSelect('Tipo de extracción', unicos(todas.map((x) => x.tipo)), fExt.tipo, (v) => { fExt.tipo = v; aplicar(); })),
+    campoBuscar('Buscar', fExt.texto, (v) => { fExt.texto = v; aplicar(); }, 'Labor, contratista, rajo…'),
+    el('button', {class: 'btn', type: 'button', onclick: () => { fExt = {mes: null, dia: '', turno: '', jefe: '', nivel: '', tipo: '', variantes: true, texto: ''}; pintar(); }}, 'Limpiar')), zona);
+  aplicar();
+  return r;
+}
+const COL_EXT = (tmh, cuenta) => [
+  {k: 'fecha', t: 'Fecha', nw: true, ver: (x) => verFecha(x.fecha), csv: (x) => verFecha(x.fecha)},
+  {k: 'turno', t: 'Turno'},
+  {k: 'jefe', t: 'Jefe de punta'},
+  {k: 'tipo', t: 'Tipo de extracción', ver: (x) => el('span', {class: 'tag ' + (x.principal ? 't-ok' : 't-neu')}, x.tipo || '—'), csv: (x) => x.tipo},
+  {k: 'destino', t: 'A'},
+  {k: 'nivel', t: 'Nivel'},
+  {k: 'labor', t: 'Labor'},
+  {k: 'Rajo', t: 'Rajo'},
+  {k: 'contratista', t: 'Contratista'},
+  {k: 'carros', t: 'Carros MIN', num: true},
+  {k: 'carrosCaja', t: 'Carros caja', num: true},
+  {k: 'tmh', t: 'Producción (TMH)', num: true, ord: tmh, ver: (x) => (cuenta(x) ? el('b', null, num(redondea(tmh(x)))) : el('span', {class: 'sub'}, 'No cuenta')), csv: (x) => (cuenta(x) ? redondea(tmh(x)) : '')},
+  {k: 'contrato', t: 'Código contrato', nw: true}
+];
+
+/* ---- Vista Personal (Dimensión Personal) ---- */
+let fPer = {nivel: '', turno: '', tipo: '', ctto: '', texto: ''};
+function vistaPersonal() {
+  const todos = (D.personal || []).map((p) => ({...p, nombre: (p.NombresyApellidos || '').trim(), nivel: p.Nivel && p.Nivel !== '-' ? String(p.Nivel) : '', labor: p.Categor_x00ed_aLabor || '', tipo: p.TipodeLabor || '', turno: p.Turno || '', ctto: p.CTTo || '', cabecilla: p.Categor_x00ed_aCabecilla || ''}));
+  const asignados = todos.filter((p) => p.tipo || p.nivel || p.turno);
+  const r = el('div'), zona = el('div');
+  const aplicar = () => {
+    const q = norm(fPer.texto);
+    const filas = asignados.filter((p) => (!fPer.nivel || p.nivel === fPer.nivel) && (!fPer.turno || p.turno === fPer.turno) && (!fPer.tipo || p.tipo === fPer.tipo) && (!fPer.ctto || p.ctto === fPer.ctto) && (!q || [p.nombre, p.labor, p.Cargo, p.cabecilla, p.ctto, p.Id_Ficha].some((x) => norm(x).includes(q))));
+    const niveles = unicos(filas.map((p) => p.nivel || 'Sin nivel')).sort((a, b) => (Number(b) || -999) - (Number(a) || -999));
+    zona.replaceChildren(
+      el('div', {class: 'kpis k4'},
+        kpi('Personal asignado', 'en el movimiento actual', num(filas.length), {pie: [`${num(todos.length - asignados.length)} sin nivel, turno ni labor`, 'neu']}),
+        ...TURNOS.map((t) => kpi(`Turno ${t}`, 'personas', num(filas.filter((p) => p.turno === t).length), {pie: [`${num(unicos(filas.filter((p) => p.turno === t).map((p) => p.labor)).length)} labores`, 'neu']}))),
+      el('div', {class: 'graficos'},
+        grafico('Personas por tipo de labor', null, barras(conteo(filas, (p) => p.tipo || 'Sin tipo', 10).map(([t, n]) => ({lb: t, partes: [[n, 's-info']], texto: num(n)})))),
+        grafico('Personas por nivel y turno', 'Cada celda es el número de personas.', matrizNivelTurno(filas, niveles))),
+      el('h2', {class: 'tit-seccion'}, 'Contratistas por nivel y labor'),
+      el('div', {class: 'niveles'}, niveles.map((n) => tarjetaNivel(n, filas.filter((p) => (p.nivel || 'Sin nivel') === n)))));
+  };
+  r.append(el('div', {class: 'filtros'},
+    campoSelect('Nivel', unicos(asignados.map((p) => p.nivel)), fPer.nivel, (v) => { fPer.nivel = v; aplicar(); }),
+    campoSelect('Turno', TURNOS, fPer.turno, (v) => { fPer.turno = v; aplicar(); }),
+    campoSelect('Tipo de labor', unicos(asignados.map((p) => p.tipo)), fPer.tipo, (v) => { fPer.tipo = v; aplicar(); }),
+    campoSelect('Contrato (CTTo)', unicos(asignados.map((p) => p.ctto)), fPer.ctto, (v) => { fPer.ctto = v; aplicar(); }),
+    campoBuscar('Buscar', fPer.texto, (v) => { fPer.texto = v; aplicar(); }, 'Nombre, labor, cabecilla…'),
+    el('button', {class: 'btn', type: 'button', onclick: () => { fPer = {nivel: '', turno: '', tipo: '', ctto: '', texto: ''}; pintar(); }}, 'Limpiar')), zona);
+  aplicar();
+  return r;
+}
+function matrizNivelTurno(filas, niveles) {
+  if (!filas.length) return el('div', {class: 'vacio-g'}, 'Sin personal con estos filtros.');
+  const max = Math.max(...niveles.flatMap((n) => TURNOS.map((t) => filas.filter((p) => (p.nivel || 'Sin nivel') === n && p.turno === t).length)), 1);
+  return el('div', {class: 'tw'}, el('table', {class: 'matriz'}, el('thead', null, el('tr', null, el('th', null, 'Nivel'), TURNOS.map((t) => el('th', {class: 'n'}, t)), el('th', {class: 'n'}, 'Total'))),
+    el('tbody', null, niveles.map((n) => { const fs = filas.filter((p) => (p.nivel || 'Sin nivel') === n);
+      return el('tr', null, el('td', null, n === 'Sin nivel' ? n : 'Nivel ' + n), TURNOS.map((t) => { const c = fs.filter((p) => p.turno === t).length; return el('td', {class: 'n celda', style: `--a:${c / max}`}, c || '—'); }), el('td', {class: 'n'}, el('b', null, fs.length))); }))));
+}
+function tarjetaNivel(n, gente) {
+  const labores = new Map();
+  gente.forEach((p) => { const k = p.labor || 'Sin labor'; if (!labores.has(k)) labores.set(k, []); labores.get(k).push(p); });
+  return el('details', {class: 'nivel', open: true}, el('summary', null, el('span', {class: 'n-tit'}, n === 'Sin nivel' ? n : 'Nivel ' + n), el('span', {class: 'tag t-neu'}, `${gente.length} personas · ${labores.size} labores`)),
+    el('div', {class: 'labores'}, [...labores].sort((a, b) => b[1].length - a[1].length).map(([lab, ps]) => el('div', {class: 'labor'},
+      el('div', {class: 'l-cab'}, el('b', null, lab), el('span', {class: 'sub'}, `${ps.length}`)),
+      el('ul', null, ps.sort((a, b) => TURNOS.indexOf(a.turno) - TURNOS.indexOf(b.turno) || a.nombre.localeCompare(b.nombre, 'es')).map((p) => el('li', null,
+        el('span', {class: 'chip-t tu' + (TURNOS.indexOf(p.turno) + 1)}, p.turno || '—'), el('span', {class: 'p-nom'}, p.nombre),
+        el('span', {class: 'sub'}, [p.Cargo, p.ctto ? 'CTTo ' + p.ctto : '', p.cabecilla ? 'Cabecilla: ' + p.cabecilla : ''].filter(Boolean).join(' · ')))))))));
+}
+
+/* ---- Consultas: cartilla de contratos y centro de costos ---- */
+let consulta = 'cartilla', qCons = {cartilla: '', cc: ''}, abiertoCons = {cartilla: null, cc: null};
+const DEF_CONS = {
+  cartilla: {lista: 'cartilla', titulo: 'Cartilla de contratos', ph: 'Código, tarea, categoría…', clave: (c) => c.C_x00f3_digo || `ID ${c.ID}`, nombre: (c) => c.Descripci_x00f3_ndeTarea || '',
+    chips: (c) => [c.Categor_x00ed_aMacro, c.Categor_x00ed_a, c.Unidad].filter(Boolean),
+    campos: [['Código', 'C_x00f3_digo'], ['Descripción de tarea', 'Descripci_x00f3_ndeTarea'], ['Categoría macro', 'Categor_x00ed_aMacro'], ['Categoría', 'Categor_x00ed_a'], ['Sub categoría', 'SubCategor_x00ed_a'], ['Categoría micro', 'Categor_x00ed_aMicro'], ['Unidad', 'Unidad'], ['Costo unitario', 'CostoUnitario', 'num'], ['Costo unitario 2', 'CostoUnitario2', 'num'], ['Avance desde', 'AvanceDesde'], ['Avance hasta', 'AvanceHasta']],
+    uso: (c) => { const n = MD ? MD.filter((d) => d.contrato === c.C_x00f3_digo).length : null, m = ME ? ME.filter((x) => x.contrato === c.C_x00f3_digo).length : null; return n === null && m === null ? null : `Usado en ${num(n || 0)} registros de desarrollos y ${num(m || 0)} de extracciones cargados.`; }},
+  cc: {lista: 'centroCostos', titulo: 'Centro de costos', ph: 'Código, título, clase…', clave: (c) => c.id_centro_costo || `ID ${c.ID}`, nombre: (c) => c.Descripci_x00f3_nCC || c.T_x00ed_tuloCC || '',
+    chips: (c) => [c.T_x00ed_tuloCC, c.Clase, c.SubClase].filter(Boolean),
+    campos: [['Código', 'id_centro_costo'], ['Título', 'T_x00ed_tuloCC'], ['Descripción', 'Descripci_x00f3_nCC'], ['Clase', 'Clase'], ['Sub clase', 'SubClase'], ['Sub clase 1', 'SubClase_x002d_1']],
+    uso: (c) => { const lab = `${c.id_centro_costo} · ${c.Descripci_x00f3_nCC || c.T_x00ed_tuloCC || ''}`.trim(); const n = MD ? MD.filter((d) => d.labor === lab).length : null, m = ME ? ME.filter((x) => x.labor === lab).length : null; return n === null && m === null ? null : `Usado como labor en ${num(n || 0)} registros de desarrollos y ${num(m || 0)} de extracciones cargados.`; }}
+};
+function vistaConsultas() {
+  const def = DEF_CONS[consulta], datos = D[def.lista] || [];
+  const r = el('div'), res = el('div', {class: 'consulta'});
+  const aplicar = () => {
+    const q = norm(qCons[consulta]);
+    const filas = datos.filter((c) => !q || [def.clave(c), def.nombre(c), ...def.chips(c), ...def.campos.map(([, k]) => c[k])].some((x) => norm(x).includes(q)))
+      .sort((a, b) => String(def.clave(a)).localeCompare(String(def.clave(b)), 'es', {numeric: true}));
+    res.replaceChildren(el('div', {class: 'resumen'}, el('span', null, el('b', null, num(filas.length)), ` de ${num(datos.length)} registros`)),
+      filas.length ? el('div', {class: 'c-lista'}, filas.slice(0, 300).map((c) => fichaConsulta(def, c))) : el('div', {class: 'vacio'}, 'Nada coincide con la búsqueda.'),
+      filas.length > 300 ? el('p', {class: 'nota'}, 'Se muestran los primeros 300. Escribe más para afinar la búsqueda.') : null);
+  };
+  const buscador = el('input', {type: 'search', class: 'c-buscar', value: qCons[consulta], placeholder: 'Buscar en ' + def.titulo.toLowerCase() + ': ' + def.ph, oninput: (e) => { qCons[consulta] = e.target.value; aplicar(); }});
+  r.append(el('div', {class: 'tarjeta'}, el('h2', null, def.titulo), el('p', {class: 'nota'}, 'Escribe para buscar y toca un registro para ver toda su información.'), buscador, res));
+  aplicar();
+  setTimeout(() => buscador.focus(), 0);
+  return r;
+}
+function fichaConsulta(def, c) {
+  const abierta = abiertoCons[consulta] === c.ID;
+  const cuerpo = abierta ? el('div', {class: 'c-ficha'}, el('dl', null, def.campos.map(([t, k, tipo]) => el('div', null, el('dt', null, t), el('dd', null, c[k] === null || c[k] === undefined || c[k] === '' || c[k] === '<null>' ? '—' : tipo === 'num' ? num(c[k]) : String(c[k]))))),
+    def.uso(c) ? el('p', {class: 'sub', style: 'margin:10px 0 0'}, def.uso(c)) : null) : null;
+  return el('div', {class: 'c-item' + (abierta ? ' abierta' : '')},
+    el('button', {type: 'button', class: 'c-cab', 'aria-expanded': String(abierta), onclick: () => { abiertoCons[consulta] = abierta ? null : c.ID; pintar(); }},
+      el('span', {class: 'c-cod'}, def.clave(c)), el('span', {class: 'c-nom'}, def.nombre(c) || '—'), el('span', {class: 'c-chips'}, def.chips(c).map((t) => el('span', {class: 'tag t-neu'}, t)))),
+    cuerpo);
+}
+
 /* ==== Ciclo de carga ==== */
 let cargando = false;
 function pantalla(titulo, texto, boton, girando) {
@@ -855,20 +1243,25 @@ async function cargar(silencioso) {
   cargando = true;
   const b = $('#btnActualizar');
   b.disabled = true; b.textContent = 'Actualizando…';
-  if (!M) pantalla('Cargando datos', 'Leyendo inventario, movimientos, vales y catálogo desde SharePoint…', null, true);
+  const mod = modulo, req = REQ[mod];
+  const nuevo = req.some((l) => !D[l]);
+  if (nuevo) pantalla('Cargando datos', 'Leyendo las listas de SharePoint de este módulo…', null, true);
   try {
-    const [catalogo, inventario, movimientos, vales] = await Promise.all(['catalogo', 'inventario', 'movimientos', 'vales'].map(leerLista));
-    let personal = [];
-    try { personal = await leerLista('personal'); } catch (e) { personal = []; }
-    M = construir({catalogo, inventario, movimientos, vales, personal});
-    $('#estado').textContent = `Datos de SharePoint · actualizado ${M.cargado.toLocaleString('es-BO', {dateStyle: 'short', timeStyle: 'short'})}`;
+    /* «personal» es opcional para Polvorín: si falla, se sigue sin nombres de contratista */
+    const leidas = await Promise.all(req.map((l) => leerLista(l).catch((e) => { if (l === 'personal' && mod === 'polvorin') return []; throw e; })));
+    req.forEach((l, i) => { D[l] = leidas[i]; LEIDO[l] = Date.now(); });
+    if (D.catalogo && D.inventario && D.movimientos && D.vales) M = construir({catalogo: D.catalogo, inventario: D.inventario, movimientos: D.movimientos, vales: D.vales, personal: D.personal || []});
+    if (D.desarrollos) MD = construirDesarrollos();
+    if (D.extracciones) ME = construirExtracciones();
+    if (mod !== modulo) return;
+    marcarEstado();
     pintarTabs();
     const activo = document.activeElement;
-    if (!(silencioso && activo && /INPUT|SELECT/.test(activo.tagName))) pintar();
+    if (nuevo || !(silencioso && activo && /INPUT|SELECT/.test(activo.tagName))) pintar();
   } catch (e) {
     console.error(e);
     const txt = e.status === 403 || e.status === 401 ? 'Tu cuenta no tiene permiso para leer estas listas. Pide acceso de lectura al administrador del sitio ReporteDiarioMinas.' : e.status === 404 ? 'No se encontró el sitio o alguna de las listas. Puede que hayan cambiado de lugar.' : 'No se pudo conectar con SharePoint. Revisa tu conexión e inténtalo otra vez.';
-    if (M) {
+    if (!nuevo) {
       $('#main').prepend(el('div', {class: 'aviso', role: 'alert'}, `${txt} Se muestran los últimos datos cargados.`));
     } else {
       pantalla('No se pudieron cargar los datos', txt, el('button', {class: 'btn primario', type: 'button', onclick: () => cargar()}, 'Reintentar'));
@@ -879,7 +1272,7 @@ async function cargar(silencioso) {
 }
 async function arrancar() {
   $('#btnActualizar').addEventListener('click', () => cargar());
-  if (window.__FUENTE_PRUEBA) { $('#acciones').hidden = false; $('#btnSalir').hidden = true; await cargar(); return; }
+  if (window.__FUENTE_PRUEBA) { $('#acciones').hidden = false; $('#btnSalir').hidden = true; pintarTabs(); await cargar(); return; }
   if (location.protocol === 'file:') { pantalla('Abre la página desde su dirección web', 'Este archivo no funciona con doble clic porque el inicio de sesión de Microsoft necesita una dirección https. Usa el enlace publicado.'); return; }
   if (pendienteConfig()) { pantalla('Falta la configuración', 'Este archivo todavía no tiene los identificadores de la aplicación de Azure.'); return; }
   try {
@@ -890,9 +1283,10 @@ async function arrancar() {
     return;
   }
   if (!cuenta) {
-    pantalla('Control de Polvorín', 'Inicia sesión con tu cuenta de Lambol para ver el inventario, los movimientos y los vales.', el('button', {class: 'btn primario', type: 'button', onclick: () => msalApp.loginRedirect({scopes: SCOPES})}, 'Iniciar sesión'));
+    pantalla('Reporte Mina Choroma', 'Inicia sesión con tu cuenta de Lambol para ver la producción, los desarrollos, el personal y el polvorín.', el('button', {class: 'btn primario', type: 'button', onclick: () => msalApp.loginRedirect({scopes: SCOPES})}, 'Iniciar sesión'));
     return;
   }
+  pintarTabs();
   const nombre = cuenta.name || cuenta.username || '';
   $('#usuario').replaceChildren(el('i', null, nombre.split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0].toUpperCase()).join('')), nombre);
   $('#acciones').hidden = false;
