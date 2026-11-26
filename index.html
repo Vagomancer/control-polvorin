@@ -146,6 +146,10 @@ td{padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
 tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--panel2) 55%,transparent)}
 tbody tr:hover td{background:var(--accent-soft)}
 tr:last-child td{border-bottom:0}
+tbody tr.fila-cuenta td{background:color-mix(in srgb,var(--ok) 13%,var(--panel))}
+tbody tr.fila-cuenta:hover td{background:color-mix(in srgb,var(--ok) 22%,var(--panel))}
+.ley-fila{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);margin-bottom:8px}
+.ley-fila i{width:14px;height:14px;border-radius:4px;background:color-mix(in srgb,var(--ok) 25%,var(--panel));border:1px solid color-mix(in srgb,var(--ok) 45%,var(--line))}
 .n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .nw{white-space:nowrap}
 .tag{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:600;white-space:nowrap}
@@ -154,6 +158,7 @@ tr:last-child td{border-bottom:0}
 .t-warn{background:var(--warn-soft);color:var(--warn)}
 .t-bad{background:var(--bad-soft);color:var(--bad)}
 .t-neu{background:var(--panel2);color:var(--muted)}
+.t-info{background:var(--info-soft);color:var(--info)}
 .pos{color:var(--ok);font-weight:600}.neg{color:var(--bad);font-weight:600}
 .fila-item{cursor:pointer}
 .fila-item td:first-child{font-weight:600}
@@ -315,6 +320,7 @@ button.barra:hover{background:var(--panel2)}
   .tarjetas-movil table,.tarjetas-movil tbody,.tarjetas-movil tr,.tarjetas-movil td{display:block;width:100%}
   .tarjetas-movil thead{display:none}
   .tarjetas-movil tr{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;padding:6px 12px}
+  .tarjetas-movil tr.fila-cuenta{background:color-mix(in srgb,var(--ok) 13%,var(--panel));border-color:color-mix(in srgb,var(--ok) 40%,var(--line))}
   .tarjetas-movil td{display:flex;justify-content:space-between;gap:14px;border:0;padding:5px 0;background:none!important;text-align:right;white-space:normal}
   .tarjetas-movil td::before{content:attr(data-t);color:var(--muted);font-size:12.5px;text-align:left}
 }
@@ -428,12 +434,12 @@ const CONFIG = {
 };
 const CAMPOS = {
   catalogo: ['Title','field_1','field_2','field_3','field_4','field_5'],
-  inventario: ['Title','CodigoKardex','Unidad','Saldo','SaldoCorte','FechaCorte','Activo'],
+  inventario: ['Title','CodigoKardex','Unidad','Saldo','SaldoCorte','FechaCorte','Activo','KgCaja','PzasCaja'],
   movimientos: ['Title','Fecha','Tipo','Item','Material','Cantidad','Unidad','SaldoAntes','SaldoDespues','Motivo','Destinatario','RegistradoPor','IdVale','SeccionalMina','SuperintendenteMina','EntregadoPor','CantidadFirmada','ClaveMov','Turno','CuentaContable','Labor','CodKardex','Factura','Origen'],
   vales: ['Title','CodigoVale','Fecha','Turno','Contratista','ContratistaRefLookupId','Categoria','Material','Unidad','Cantidad','CantidadDespachada','Labor','EncargadodeRegistro','Destino','Cuenta','CodKardex','FechadeDespacho','Estado'],
   personal: ['NombresyApellidos','Id_Ficha','CTTo','Cargo','Categor_x00ed_a','Nivel','Categor_x00ed_aLabor','Categor_x00ed_aLabor0','Turno','Categor_x00ed_aCabecilla','TipodeLabor'],
   desarrollos: ['FechadeRegistro','Turno','JefedePunta','Longitud','FactordeEficiencia','AvanceTeorico','TD','TP','Cantidad_x0028_Cuadros_x002c_Met','Observaciones','LaborLookupId','NivelLookupId','ContratistaLookupId','Contratista2LookupId','C_x00f3_digoContratoLookupId'],
-  extracciones: ['FechaRegistro','N_x00b0_Turno','JefedePunta','TipodeExtracci_x00f3_n','A','Rajo','DeLabor','N_x00b0_CarrosMIN','N_x00b0_CarrosCaja','volteo0LookupId','CentrodeCostoLookupId','Contratista1LookupId','Contratista2LookupId','C_x00f3_digoContratoLookupId'],
+  extracciones: ['FechaRegistro','N_x00b0_Turno','JefedePunta','TipodeExtracci_x00f3_n','A','Rajo','DeLabor','N_x00b0_CarrosMIN','N_x00b0_CarrosCaja','N_x00b0_SKIPMIN','N_x00b0_SkipCaja','Cantidad','volteo0LookupId','CentrodeCostoLookupId','Contratista1LookupId','Contratista2LookupId','C_x00f3_digoContratoLookupId'],
   cartilla: ['C_x00f3_digo','Categor_x00ed_a','SubCategor_x00ed_a','Descripci_x00f3_ndeTarea','Unidad','CostoUnitario','AvanceDesde','AvanceHasta','CostoUnitario2','Categor_x00ed_aMacro','Categor_x00ed_aMicro'],
   centroCostos: ['id_centro_costo','T_x00ed_tuloCC','Descripci_x00f3_nCC','Clase','SubClase','SubClase_x002d_1'],
   volteos: ['NivelVolteo']
@@ -640,6 +646,8 @@ function construir(raw) {
   })).sort((a, b) => (b.fecha).localeCompare(a.fecha) || b.ID - a.ID);
 
   const catalogo = raw.catalogo.map((c) => ({titulo: c.Title, categoria: c.field_1, subcategoria: c.field_2, unidad: c.field_3, longitud: c.field_4, activo: c.field_5 === 'Sí', item: itemDe(c.Title)}));
+  const porTitulo = new Map(catalogo.map((c) => [c.titulo, c]));
+  const enUnidad = (v) => { const c = porTitulo.get(v.Material); return (Number(v.Cantidad) || 0) * (c && c.longitud > 0 ? c.longitud : 1); };
 
   const inventario = raw.inventario.map((i) => {
     const corteMs = i.FechaCorte ? Date.parse(i.FechaCorte) : -Infinity;
@@ -649,19 +657,20 @@ function construir(raw) {
     const salidas = sumar(enPeriodo, (m) => (m.firmada < 0 ? -m.firmada : 0));
     const valesItem = vales.filter((v) => v.item === i.Title);
     const pend = valesItem.filter((v) => v.pendiente);
-    const pendiente = sumar(pend, (v) => v.Cantidad);
+    const pendiente = redondea(sumar(pend, enUnidad));
     const sinMov = valesItem.filter((v) => v.despachado && !v.tieneMov);
     const sinMovCant = sumar(sinMov, (v) => v.CantidadDespachada ?? v.Cantidad);
     const saldo = Number(i.Saldo) || 0;
     const calculado = redondea((Number(i.SaldoCorte) || 0) + ingresos - salidas);
     const diferencia = redondea(saldo - calculado);
     return {
-      titulo: i.Title, cod: i.CodigoKardex || '', unidad: i.Unidad, saldo, corte: Number(i.SaldoCorte) || 0, fechaCorte: fechaIso(i.FechaCorte), activo: i.Activo !== false,
+      titulo: i.Title, cod: i.CodigoKardex || '', unidad: i.Unidad, saldo, corte: Number(i.SaldoCorte) || 0, fechaCorte: fechaIso(i.FechaCorte), activo: i.Activo !== false, kgCaja: Number(i.KgCaja) || 0, pzasCaja: Number(i.PzasCaja) || 0,
       ingresos, salidas, calculado, diferencia, pendiente, nPend: pend.length, disponible: redondea(saldo - pendiente),
       sinMovCant, residual: redondea(diferencia + sinMovCant), ultimo: movs[0] || null,
       materiales: catalogo.filter((c) => c.item === i.Title).map((c) => {
         const ms = enPeriodo.filter((m) => m.Material === c.titulo);
-        return {...c, salidas: sumar(ms, (m) => (m.firmada < 0 ? -m.firmada : 0)), ingresos: sumar(ms, (m) => (m.firmada > 0 ? m.firmada : 0)), pendiente: sumar(pend.filter((v) => v.Material === c.titulo), (v) => v.Cantidad)};
+        const pv = pend.filter((v) => v.Material === c.titulo);
+        return {...c, salidas: redondea(sumar(ms, (m) => (m.firmada < 0 ? -m.firmada : 0))), ingresos: redondea(sumar(ms, (m) => (m.firmada > 0 ? m.firmada : 0))), pendTramos: sumar(pv, (v) => v.Cantidad), pendiente: redondea(sumar(pv, enUnidad))};
       })
     };
   }).sort((a, b) => Number(b.activo) - Number(a.activo) || a.titulo.localeCompare(b.titulo, 'es'));
@@ -705,7 +714,7 @@ function tabla(columnas, filas, opciones = {}) {
       });
     }
     const cab = el('tr', null, columnas.map((c) => el('th', {class: 'ord' + (c.num ? ' n' : ''), scope: 'col', 'aria-sort': orden === c.k ? (dir > 0 ? 'ascending' : 'descending') : 'none', onclick: () => { if (orden === c.k) dir = -dir; else { orden = c.k; dir = c.num ? -1 : 1; } visibles = lote; pintar(); }}, c.t + (orden === c.k ? (dir > 0 ? ' ▲' : ' ▼') : ''))));
-    const cuerpo = datos.slice(0, visibles).map((f) => el('tr', null, columnas.map((c) => {
+    const cuerpo = datos.slice(0, visibles).map((f) => el('tr', {class: opciones.claseFila ? opciones.claseFila(f) || null : null}, columnas.map((c) => {
       const v = c.ver ? c.ver(f) : f[c.k];
       return el('td', {class: (c.num ? 'n ' : '') + (c.nw ? 'nw' : ''), 'data-t': c.t}, v === null || v === undefined || v === '' ? '—' : v);
     })));
@@ -833,31 +842,36 @@ function vistaInventario() {
   const zona = el('div');
   const dibujar = () => zona.replaceChildren(tablaInventario());
   caja.append(el('h2', null, 'Inventario actual'),
-    el('p', {class: 'nota'}, 'Saldo general de la lista Inventario Polvorín. «Disponible» resta lo pedido en vales todavía sin despachar. Haz clic en un ítem para ver su desglose del catálogo.'),
+    el('p', {class: 'nota'}, 'Lo que queda en el polvorín y lo pedido en vales sin despachar, en la unidad de cada ítem. Haz clic en un ítem para ver sus presentaciones del catálogo.'),
     el('div', {class: 'filtros'},
       campoBuscar('Buscar ítem o material', fInv.texto, (v) => { fInv.texto = v; dibujar(); }, 'Ej.: Fanel #16, W-3-2'),
       el('label', {class: 'chk'}, el('input', {type: 'checkbox', checked: fInv.inactivos, onchange: (e) => { fInv.inactivos = e.target.checked; dibujar(); }}), 'Incluir ítems inactivos'),
-      el('button', {class: 'btn', type: 'button', onclick: () => descargarCsv('inventario-polvorin.csv', [{k: 'titulo', t: 'Ítem'}, {k: 'cod', t: 'Cód. kárdex'}, {k: 'unidad', t: 'Unidad'}, {k: 'saldo', t: 'Saldo'}, {k: 'pendiente', t: 'Pendiente en vales'}, {k: 'disponible', t: 'Disponible'}, {k: 'corte', t: 'Saldo de corte'}, {k: 'ingresos', t: 'Ingresos'}, {k: 'salidas', t: 'Salidas'}, {k: 'diferencia', t: 'Diferencia'}], M.inventario)}, 'Descargar CSV')
+      el('button', {class: 'btn', type: 'button', onclick: () => descargarCsv('inventario-polvorin.csv', [{k: 'titulo', t: 'Ítem'}, {k: 'cod', t: 'Cód. kárdex'}, {k: 'unidad', t: 'Unidad'}, {k: 'saldo', t: 'Saldo'}, {k: 'pendiente', t: 'Pendiente en vales'}, {k: 'ultimo', t: 'Último movimiento', csv: (i) => (i.ultimo ? verFecha(i.ultimo.fecha) : '')}, {k: 'estado', t: 'Estado', csv: (i) => estadoItem(i)[0]}], M.inventario)}, 'Descargar CSV')
     ), zona);
   dibujar();
   r.append(caja);
   return r;
 }
+const AYUDA_ESTADO = {
+  'Al día': 'El saldo cuadra con los movimientos y alcanza para lo pedido en vales.',
+  'No alcanza': 'Lo pedido en vales sin despachar supera el saldo.',
+  'Revisar saldo': 'El saldo no cuadra con el corte más los movimientos.',
+  'Inactivo': 'El ítem está marcado como inactivo en el inventario.'};
+const estadoItem = (i) => (!i.activo ? ['Inactivo', 't-neu'] : i.disponible < 0 ? ['No alcanza', 't-bad'] : Math.abs(i.diferencia) > 0.01 ? ['Revisar saldo', 't-warn'] : ['Al día', 't-ok']);
 function tablaInventario() {
   const q = norm(fInv.texto);
   const filas = M.inventario.filter((i) => (fInv.inactivos || i.activo) && (!q || norm(i.titulo).includes(q) || norm(i.cod).includes(q) || i.materiales.some((m) => norm(m.titulo).includes(q))));
   if (!filas.length) return el('div', {class: 'tw'}, el('div', {class: 'vacio'}, 'Ningún ítem coincide con la búsqueda.'));
-  const cab = el('tr', null, ['Ítem', 'Cód. kárdex', 'Unidad'].map((t) => el('th', {scope: 'col'}, t)), ['Saldo', 'Pendiente en vales', 'Disponible', 'Salidas desde el corte', 'Ingresos desde el corte'].map((t) => el('th', {class: 'n', scope: 'col'}, t)), el('th', {scope: 'col'}, 'Último movimiento'), el('th', {scope: 'col'}, 'Estado'));
+  const cab = el('tr', null, ['Ítem', 'Cód. kárdex', 'Unidad'].map((t) => el('th', {scope: 'col'}, t)), ['Saldo', 'Pendiente en vales'].map((t) => el('th', {class: 'n', scope: 'col'}, t)), el('th', {scope: 'col'}, 'Último movimiento'), el('th', {scope: 'col'}, 'Estado'));
   const cuerpo = [];
   for (const i of filas) {
     const abierto = abiertos.has(i.titulo) || (!!norm(fInv.texto) && i.materiales.some((m) => norm(m.titulo).includes(q)));
-    const estado = !i.activo ? el('span', {class: 'tag t-neu'}, 'Inactivo') : i.disponible < 0 ? el('span', {class: 'tag t-bad'}, 'No alcanza') : Math.abs(i.diferencia) > 0.01 ? el('span', {class: 'tag t-warn'}, 'Revisar saldo') : el('span', {class: 'tag t-ok'}, 'Al día');
+    const [et, cl] = estadoItem(i), estado = el('span', {class: 'tag ' + cl, title: AYUDA_ESTADO[et]}, et);
     cuerpo.push(el('tr', {class: 'fila-item' + (abierto ? ' abierta' : ''), tabIndex: 0, 'aria-expanded': String(abierto), onclick: () => alternar(i.titulo, abierto), onkeydown: (e) => { if (e.key === 'Enter') alternar(i.titulo, abierto); }},
       el('td', null, i.titulo), el('td', {class: 'nw'}, i.cod || '—'), el('td', null, i.unidad || '—'),
       el('td', {class: 'n'}, el('b', null, num(i.saldo))), el('td', {class: 'n'}, i.pendiente ? num(i.pendiente) : '—'),
-      el('td', {class: 'n' + (i.disponible < 0 ? ' neg' : '')}, num(i.disponible)), el('td', {class: 'n'}, num(i.salidas)), el('td', {class: 'n'}, num(i.ingresos)),
       el('td', {class: 'nw'}, i.ultimo ? verFecha(i.ultimo.fecha) : '—'), el('td', null, estado)));
-    if (abierto) cuerpo.push(el('tr', {class: 'detalle'}, el('td', {colSpan: 10}, detalleItem(i))));
+    if (abierto) cuerpo.push(el('tr', {class: 'detalle'}, el('td', {colSpan: 7}, detalleItem(i))));
   }
   return el('div', {class: 'tw'}, el('table', null, el('thead', null, cab), el('tbody', null, cuerpo)));
 }
@@ -867,11 +881,28 @@ function detalleItem(i) {
     el('span', {class: 'sub'}, `Corte ${verFecha(i.fechaCorte)}: ${num(i.corte)} ${i.unidad || ''}`),
     el('button', {class: 'btn enlace', type: 'button', onclick: (e) => { e.stopPropagation(); fMov = {...inicialMov(), desde: '', item: i.titulo}; irA('movimientos'); }}, 'Ver todos sus movimientos'),
     el('button', {class: 'btn enlace', type: 'button', onclick: (e) => { e.stopPropagation(); fVal = {...inicialVal(), estado: '', texto: i.titulo}; irA('vales'); }}, 'Ver sus vales'));
-  if (!i.materiales.length) return el('div', null, acciones, el('div', {class: 'sub'}, 'Este ítem no tiene materiales asociados en el catálogo.'));
+  const u = i.unidad || '', porTramo = i.materiales.some((m) => m.longitud > 0), porCaja = i.pzasCaja > 0 && i.kgCaja > 0;
+  if (porCaja) acciones.prepend(el('span', {class: 'tag t-info'}, `Caja de ${num(i.kgCaja)} kg = ${num(i.pzasCaja)} ${u}`),
+    el('span', {class: 'sub'}, `Saldo ≈ ${num(redondea(i.saldo / i.pzasCaja))} cajas · ${num(redondea(i.saldo * i.kgCaja / i.pzasCaja))} kg`));
+  if (!i.materiales.length) return el('div', null, acciones, el('div', {class: 'sub'}, 'Este ítem no tiene presentaciones en el catálogo.'));
+  const kg = (v) => num(redondea(v * i.kgCaja / i.pzasCaja)), uu = u || 'cant.';
+  const cols = [
+    ['Presentación del catálogo', (m) => m.titulo],
+    porTramo && ['Metros por tramo', (m) => (m.longitud ? num(m.longitud) : '—'), 1],
+    [`Salidas desde el corte (${uu})`, (m) => num(m.salidas), 1],
+    porCaja && ['Salidas en kg', (m) => kg(m.salidas), 1],
+    [`Ingresos (${uu})`, (m) => num(m.ingresos), 1],
+    porTramo ? ['Pendiente en vales', (m) => (m.pendTramos ? `${num(m.pendTramos)} tramos = ${num(m.pendiente)} ${u}` : '—'), 1]
+      : [`Pendiente en vales (${uu})`, (m) => (m.pendiente ? num(m.pendiente) + (porCaja ? ` (≈ ${kg(m.pendiente)} kg)` : '') : '—'), 1],
+    ['Catálogo', (m) => el('span', {class: 'tag ' + (m.activo ? 't-ok' : 't-neu')}, m.activo ? 'Activo' : 'Inactivo')]
+  ].filter(Boolean);
   const t = el('table', null,
-    el('thead', null, el('tr', null, ['Material del catálogo', 'Subcategoría', 'Long. (m)', 'Salidas desde el corte', 'Ingresos', 'Pendiente en vales', 'Catálogo'].map((x, n) => el('th', {class: n >= 2 && n <= 5 ? 'n' : '', scope: 'col'}, x)))),
-    el('tbody', null, i.materiales.map((m) => el('tr', null, el('td', null, m.titulo), el('td', null, m.subcategoria || '—'), el('td', {class: 'n'}, m.longitud ? num(m.longitud) : '—'), el('td', {class: 'n'}, num(m.salidas)), el('td', {class: 'n'}, num(m.ingresos)), el('td', {class: 'n'}, m.pendiente ? num(m.pendiente) : '—'), el('td', null, el('span', {class: 'tag ' + (m.activo ? 't-ok' : 't-neu')}, m.activo ? 'Activo' : 'Inactivo'))))));
-  return el('div', {onclick: (e) => e.stopPropagation()}, acciones, t, el('p', {class: 'sub', style: 'margin:8px 0 0'}, 'El saldo existe solo a nivel de ítem general: el catálogo desglosa lo pedido y lo entregado, no guarda saldo propio por material.'));
+    el('thead', null, el('tr', null, cols.map(([x, , n]) => el('th', {class: n ? 'n' : '', scope: 'col'}, x)))),
+    el('tbody', null, i.materiales.map((m) => el('tr', null, cols.map(([, f, n]) => el('td', {class: n ? 'n' : ''}, f(m)))))));
+  const nota = porTramo ? `Se pide por tramos y se descuenta en ${u ? u.toLowerCase() + 's' : 'metros'}: tramos × metros por tramo.`
+    : porCaja ? `Se cuenta en ${u || 'piezas'}; los kilos se calculan con ${num(i.kgCaja)} kg por cada ${num(i.pzasCaja)} ${u.replace(/\.$/, '')}.`
+    : `Cada presentación descuenta en ${u || 'la unidad del ítem'} del mismo saldo.`;
+  return el('div', {onclick: (e) => e.stopPropagation()}, acciones, el('div', {class: 'tw'}, t), el('p', {class: 'sub', style: 'margin:8px 0 0'}, nota + ' El saldo se lleva solo por ítem, no por presentación.'));
 }
 
 /* ---- Movimientos ---- */
@@ -1086,7 +1117,8 @@ function construirExtracciones() {
     const carros = ent(x.N_x00b0_CarrosMIN);
     return {...x, fecha: fechaIso(x.FechaRegistro), turno: x.N_x00b0_Turno || '', jefe: (x.JefedePunta || '').trim(), tipo: x.TipodeExtracci_x00f3_n || '', destino: (x.A || '').trim(),
       nivel: c.nivel(lk(x.volteo0LookupId)), labor: c.labor(lk(x.CentrodeCostoLookupId)), contratista: c.persona(lk(x.Contratista1LookupId)), contratista2: c.persona(lk(x.Contratista2LookupId)),
-      contrato: c.contrato(lk(x.C_x00f3_digoContratoLookupId)), carros, carrosCaja: ent(x.N_x00b0_CarrosCaja), principal, exacto, variante};
+      contrato: c.contrato(lk(x.C_x00f3_digoContratoLookupId)), carros, carrosCaja: ent(x.N_x00b0_CarrosCaja), skipMin: ent(x.N_x00b0_SKIPMIN), skipCaja: ent(x.N_x00b0_SkipCaja),
+      cantidad: x.Cantidad === null || x.Cantidad === undefined || x.Cantidad === '' ? null : ent(x.Cantidad),unidadCtto: (c.cart.get(lk(x.C_x00f3_digoContratoLookupId)) || {}).Unidad || '', principal, exacto, variante};
   }).sort((a, b) => b.fecha.localeCompare(a.fecha) || TURNOS.indexOf(b.turno) - TURNOS.indexOf(a.turno) || b.ID - a.ID);
 }
 
@@ -1266,8 +1298,8 @@ function vistaExtracciones() {
       el('div', {class: 'graficos'},
         grafico('Producción por labor', 'Las 10 labores con más TMH.', barrasSuma(sumaPor(prod, (x) => x.labor, (x) => x.carros * FACTOR_TMH), 'TMH', 's-info', (v) => { fExt.labor = v; pintar(); })),
         grafico('Producción por contratista', 'Los 10 contratistas con más TMH.', barrasSuma(sumaPor(prod, (x) => x.contratista, (x) => x.carros * FACTOR_TMH), 'TMH', 's-info', (v) => { fExt.contratista = v; pintar(); }))),
-      el('div', {class: 'tarjeta', 'data-v': 'detalle'}, el('div', {class: 'cab-tabla'}, el('div', null, el('h2', null, 'Registros de extracción'), el('p', {class: 'nota'}, 'Todos los tipos de extracción. La columna «Producción» muestra las TMH solo en los registros que cuentan.')),
-        el('button', {class: 'btn', type: 'button', onclick: () => descargarCsv('extracciones.csv', COL_EXT(tmh, cuenta), filas)}, 'Descargar CSV')), tabla(COL_EXT(tmh, cuenta), filas))].filter(Boolean));
+      el('div', {class: 'tarjeta', 'data-v': 'detalle'}, el('div', {class: 'cab-tabla'}, el('div', null, el('h2', null, 'Registros de extracción'), el('p', {class: 'nota'}, 'Todos los tipos de extracción. «Cantidad» es lo registrado según la unidad del contrato.'), el('span', {class: 'ley-fila'}, el('i'), 'Fila resaltada: extracción principal que cuenta en la producción (TMH)')),
+        el('button', {class: 'btn', type: 'button', onclick: () => descargarCsv('extracciones.csv', COL_EXT(tmh, cuenta), filas)}, 'Descargar CSV')), tabla(COL_EXT(tmh, cuenta), filas, {claseFila: (x) => (cuenta(x) ? 'fila-cuenta' : '')}))].filter(Boolean));
     mostrarVista(zona, subvista.produccion);
   };
   r.append(titulo('Producción', 'TMH = carros MIN × 1,5. Solo cuentan las extracciones principales con A = superficie. Toca una barra para filtrar.'),
@@ -1288,6 +1320,10 @@ const COL_EXT = (tmh, cuenta) => [
   {k: 'contratista', t: 'Contratista'},
   {k: 'carros', t: 'Carros MIN', num: true},
   {k: 'carrosCaja', x: 1, t: 'Carros caja', num: true},
+  {k: 'skipMin', x: 1, t: 'Skip MIN', num: true},
+  {k: 'skipCaja', x: 1, t: 'Skip caja', num: true},
+  {k: 'cantidad', t: 'Cantidad (contrato)', num: true, ver: (x) => (x.cantidad || x.cantidad === 0 ? el('span', null, num(x.cantidad), x.unidadCtto ? el('small', {class: 'sub'}, ' ' + x.unidadCtto) : null) : '—'), csv: (x) => x.cantidad},
+  {k: 'unidadCtto', x: 1, t: 'Unidad del contrato'},
   {k: 'tmh', t: 'Producción (TMH)', num: true, ord: tmh, ver: (x) => (cuenta(x) ? el('b', null, num(redondea(tmh(x)))) : el('span', {class: 'sub'}, 'No cuenta')), csv: (x) => (cuenta(x) ? redondea(tmh(x)) : '')},
   {k: 'contrato', x: 1, t: 'Código contrato', nw: true}
 ];
