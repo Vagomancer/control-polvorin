@@ -787,8 +787,13 @@ function irModulo(id) {
   if (!permitidos.includes(id)) return;
   modulo = id; try { localStorage.setItem('rm-modulo', id); } catch (e) {}
   pintarTabs(); window.scrollTo(0, 0);
-  if (REQ[id].some((l) => !D[l])) { if (cargando) pantallaCarga(REQ[id], true); else cargar(); } else { pintar(); marcarEstado(); }
+  if (REQ[id].some((l) => !D[l])) { if (cargando) pantallaCarga(REQ[id], true); else cargar(); return; }
+  /* Ya hay datos: se muestran al instante y se vuelven a leer en segundo plano
+     (salvo que se hayan leído hace menos de SEG_RECARGA segundos, para no repetir al saltar entre pestañas) */
+  pintar(); marcarEstado();
+  if (REQ[id].some((l) => Date.now() - (LEIDO[l] || 0) > SEG_RECARGA * 1000)) cargar(true);
 }
+const SEG_RECARGA = 30;
 function irA(id) { pestana = id; pintar(); window.scrollTo(0, 0); }
 function pintar() {
   let vista;
