@@ -818,12 +818,14 @@ function vistaInventario() {
   const dias14 = Array.from({length: 14}, (_, k) => dia(13 - k)), corte7 = dias14[7];
   const serie = (lista, f) => dias14.map((d) => [d, lista.filter((x) => x.fecha === d && f(x)).length]);
   const kpiSerie = (lista, f) => { const s = serie(lista, f); const act = s.slice(7).reduce((a, x) => a + x[1], 0), ant = s.slice(0, 7).reduce((a, x) => a + x[1], 0); return {s, act, ant}; };
-  const sal = kpiSerie(M.movimientos, (m) => m.firmada < 0), ing = kpiSerie(M.movimientos, (m) => m.firmada > 0), sol = kpiSerie(M.vales, () => true);
+  const sal = kpiSerie(M.movimientos, (m) => m.firmada < 0), ing = kpiSerie(M.movimientos, (m) => m.firmada > 0), desde7 = dias14[7];
+  const salida7 = M.movimientos.filter((m) => m.firmada < 0 && m.fecha >= desde7);
+  const top = sumaPor(salida7, (m) => m.item, (m) => -m.firmada, 1)[0], uTop = top ? (M.inventario.find((i) => i.titulo === top[0]) || {}).unidad || '' : '';
   const antiguos = M.controles.antiguos.length, falt = M.controles.faltante.length;
   r.append(el('div', {class: 'kpis'},
     kpi('Salidas registradas', 'últimos 7 días', num(sal.act), {delta: [sal.act, sal.ant], serie: sal.s, unidad: 'salidas'}),
     kpi('Ingresos registrados', 'últimos 7 días', num(ing.act), {delta: [ing.act, ing.ant], serie: ing.s, unidad: 'ingresos'}),
-    kpi('Líneas de vale solicitadas', 'últimos 7 días', num(sol.act), {delta: [sol.act, sol.ant], serie: sol.s, unidad: 'líneas'}),
+    kpi('Material que más salió', 'últimos 7 días', top ? top[0] : 'Sin salidas', {chico: true, pie: top ? [`${num(redondea(top[1]))} ${uTop} en ${num(salida7.filter((m) => m.item === top[0]).length)} salidas`, 'neu'] : null}),
     kpi('Vales pendientes de despacho', 'a la fecha', num(pend.length), {pie: antiguos ? [`${num(antiguos)} con más de ${CONFIG.diasPendienteAntiguo} días`, 'warn'] : ['Ninguno atrasado', 'ok']}),
     kpi('Ítems que no alcanzan', `de ${activos.length} ítems activos`, num(falt), {pie: falt ? ['Lo pedido supera el saldo', 'bad'] : ['Todo el saldo cubre lo pedido', 'ok']}),
     kpi('Último movimiento', ult ? (ult.Tipo || '') : '', ult ? verFecha(ult.fecha) : '—', {chico: true, pie: ult ? [`${ult.hora ? ult.hora + ' · ' : ''}${ult.item || ult.Material || ''}`, 'neu'] : null})
@@ -1378,14 +1380,12 @@ function tarjetaNivel(n, gente) {
 /* ---- Consultas: cartilla de contratos y centro de costos ---- */
 let consulta = 'cartilla', qCons = {cartilla: '', cc: ''}, abiertoCons = {cartilla: null, cc: null};
 const DEF_CONS = {
-  cartilla: {lista: 'cartilla', titulo: 'Cartilla de contratos', ph: 'Código, tarea, categoría…', clave: (c) => c.C_x00f3_digo || `ID ${c.ID}`, nombre: (c) => c.Descripci_x00f3_ndeTarea || '',
-    chips: (c) => [c.Categor_x00ed_aMacro, c.Categor_x00ed_a, c.Unidad].filter(Boolean),
-    campos: [['Código', 'C_x00f3_digo'], ['Descripción de tarea', 'Descripci_x00f3_ndeTarea'], ['Categoría macro', 'Categor_x00ed_aMacro'], ['Categoría', 'Categor_x00ed_a'], ['Sub categoría', 'SubCategor_x00ed_a'], ['Categoría micro', 'Categor_x00ed_aMicro'], ['Unidad', 'Unidad'], ['Costo unitario', 'CostoUnitario', 'num'], ['Costo unitario 2', 'CostoUnitario2', 'num'], ['Avance desde', 'AvanceDesde'], ['Avance hasta', 'AvanceHasta']],
-    uso: (c) => { const n = MD ? MD.filter((d) => d.contrato === c.C_x00f3_digo).length : null, m = ME ? ME.filter((x) => x.contrato === c.C_x00f3_digo).length : null; return n === null && m === null ? null : `Usado en ${num(n || 0)} registros de desarrollos y ${num(m || 0)} de extracciones cargados.`; }},
-  cc: {lista: 'centroCostos', titulo: 'Centro de costos', ph: 'Código, título, clase…', clave: (c) => c.id_centro_costo || `ID ${c.ID}`, nombre: (c) => c.Descripci_x00f3_nCC || c.T_x00ed_tuloCC || '',
-    chips: (c) => [c.T_x00ed_tuloCC, c.Clase, c.SubClase].filter(Boolean),
-    campos: [['Código', 'id_centro_costo'], ['Título', 'T_x00ed_tuloCC'], ['Descripción', 'Descripci_x00f3_nCC'], ['Clase', 'Clase'], ['Sub clase', 'SubClase'], ['Sub clase 1', 'SubClase_x002d_1']],
-    uso: (c) => { const lab = `${c.id_centro_costo} · ${c.Descripci_x00f3_nCC || c.T_x00ed_tuloCC || ''}`.trim(); const n = MD ? MD.filter((d) => d.labor === lab).length : null, m = ME ? ME.filter((x) => x.labor === lab).length : null; return n === null && m === null ? null : `Usado como labor en ${num(n || 0)} registros de desarrollos y ${num(m || 0)} de extracciones cargados.`; }}
+  cartilla: {lista: 'cartilla', titulo: 'Cartilla de contratos', ph: 'código o descripción…', clave: (c) => c.C_x00f3_digo || `ID ${c.ID}`, nombre: (c) => c.Descripci_x00f3_ndeTarea || '',
+    chips: (c) => [c.Unidad].filter(Boolean),
+    campos: [['Código', 'C_x00f3_digo'], ['Descripción', 'Descripci_x00f3_ndeTarea'], ['Avance desde', 'AvanceDesde'], ['Avance hasta', 'AvanceHasta'], ['Costo unitario', 'CostoUnitario', 'num'], ['Unidad', 'Unidad']],},
+  cc: {lista: 'centroCostos', titulo: 'Centro de costos', ph: 'código, título o descripción…', clave: (c) => c.id_centro_costo || `ID ${c.ID}`, nombre: (c) => c.T_x00ed_tuloCC || c.Descripci_x00f3_nCC || '',
+    chips: () => [],
+    campos: [['Código', 'id_centro_costo'], ['Título', 'T_x00ed_tuloCC'], ['Descripción', 'Descripci_x00f3_nCC']],}
 };
 function vistaConsultas() {
   const def = DEF_CONS[consulta], datos = D[def.lista] || [];
@@ -1396,17 +1396,17 @@ function vistaConsultas() {
       .sort((a, b) => String(def.clave(a)).localeCompare(String(def.clave(b)), 'es', {numeric: true}));
     res.replaceChildren(el('div', {class: 'resumen'}, el('span', null, el('b', null, num(filas.length)), ` de ${num(datos.length)} registros`)),
       filas.length ? el('div', {class: 'c-lista'}, filas.slice(0, 300).map((c) => fichaConsulta(def, c, aplicar))) : el('div', {class: 'vacio'}, 'Nada coincide con la búsqueda.'),
-      filas.length > 300 ? el('p', {class: 'nota'}, 'Se muestran los primeros 300. Escribe más para afinar la búsqueda.') : null);
+      filas.length > 300 ? el('p', {class: 'nota'}, 'Se muestran los primeros 300. Escribe más para afinar la búsqueda.') : '');
   };
   const buscador = el('input', {type: 'search', class: 'c-buscar', value: qCons[consulta], placeholder: 'Buscar en ' + def.titulo.toLowerCase() + ': ' + def.ph, oninput: (e) => { qCons[consulta] = e.target.value; aplicar(); }});
-  r.append(el('div', {class: 'tarjeta'}, el('h2', null, def.titulo), el('p', {class: 'nota'}, 'Escribe para buscar y toca un registro para ver toda su información.'), buscador, res));
+  r.append(el('div', {class: 'tarjeta'}, el('h2', null, def.titulo), el('p', {class: 'nota'}, 'Escribe para buscar y toca un registro para ver su información.'), buscador, res));
   aplicar();
   return r;
 }
 function fichaConsulta(def, c, aplicar) {
   const abierta = abiertoCons[consulta] === c.ID;
   const cuerpo = abierta ? el('div', {class: 'c-ficha'}, el('dl', null, def.campos.map(([t, k, tipo]) => el('div', null, el('dt', null, t), el('dd', null, c[k] === null || c[k] === undefined || c[k] === '' || c[k] === '<null>' ? '—' : tipo === 'num' ? num(c[k]) : String(c[k]))))),
-    def.uso(c) ? el('p', {class: 'sub', style: 'margin:10px 0 0'}, def.uso(c)) : null) : null;
+  ) : null;
   return el('div', {class: 'c-item' + (abierta ? ' abierta' : '')},
     el('button', {type: 'button', class: 'c-cab', 'aria-expanded': String(abierta), onclick: () => { abiertoCons[consulta] = abierta ? null : c.ID; aplicar(); }},
       el('span', {class: 'c-cod'}, def.clave(c)), el('span', {class: 'c-nom'}, def.nombre(c) || '—'), el('span', {class: 'c-chips'}, def.chips(c).map((t) => el('span', {class: 'tag t-neu'}, t)))),
