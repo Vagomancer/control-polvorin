@@ -1225,22 +1225,22 @@ function vistaDesarrollos() {
     filas.forEach((d) => { const x = porDia.get(d.fecha) || {fecha: d.fecha, long: 0, av: 0, n: 0, t: {}}; x.long += d.longitud; x.av += d.avance; x.n++; x.t[d.turno] = (x.t[d.turno] || 0) + d.avance; porDia.set(d.fecha, x); });
     zona.replaceChildren(
       el('div', {class: 'kpis k4'},
-        kpi('Avance teórico', fDes.dia ? verFecha(fDes.dia) : verMes(fDes.mes) || 'todo el periodo', el('span', null, num(redondea(totAv)), el('small', {class: 'k-u'}, ' m')), {pie: [`${num(dias.length)} días con registro`, 'neu']}),
-        kpi('Longitud perforada', 'suma de longitudes', el('span', null, num(redondea(totLong)), el('small', {class: 'k-u'}, ' m')), {pie: [`${num(conAv.length)} registros con avance`, 'neu']}),
+        kpi('Avance teórico', fDes.dia ? verFecha(fDes.dia) : verMes(fDes.mes) || 'todo el periodo', el('span', null, num(redondea(totAv)), el('small', {class: 'k-u'}, ' m.l.')), {pie: [`${num(dias.length)} días con registro`, 'neu']}),
+        kpi('Longitud perforada', 'suma de longitudes', el('span', null, num(redondea(totLong)), el('small', {class: 'k-u'}, ' m.l.')), {pie: [`${num(conAv.length)} registros con avance`, 'neu']}),
         kpi('Factor de eficiencia', 'aplicado al avance', factores.length === 1 ? num(factores[0]) : factores.length ? `${num(Math.min(...factores))}–${num(Math.max(...factores))}` : '—', {pie: ['Avance teórico = longitud × factor', 'neu']}),
-        kpi('Promedio diario', 'avance teórico por día', el('span', null, num(dias.length ? redondea(totAv / dias.length) : 0), el('small', {class: 'k-u'}, ' m')), {pie: [`${num(filas.length)} registros en total`, 'neu']})),
+        kpi('Promedio diario', 'avance teórico por día', el('span', null, num(dias.length ? redondea(totAv / dias.length) : 0), el('small', {class: 'k-u'}, ' m.l.')), {pie: [`${num(filas.length)} registros en total`, 'neu']})),
       el('div', {class: 'graficos'},
-        grafico('Avance teórico por día', 'Metros por día, apilados por turno.', columnasTurno(filas, (d) => d.avance, 'm')),
-        grafico('Avance teórico por jefe de punta', 'Metros con los filtros elegidos.', barrasSuma(sumaPor(filas, (d) => d.jefe, (d) => d.avance), 'm', 's-info', (v) => { fDes.jefe = v; pintar(); }))),
+        grafico('Avance teórico por día', 'Metros lineales por día, apilados por turno.', columnasTurno(filas, (d) => d.avance, 'm.l.')),
+        grafico('Avance teórico por jefe de punta', 'Metros lineales con los filtros elegidos.', barrasSuma(sumaPor(filas, (d) => d.jefe, (d) => d.avance), 'm.l.', 's-info', (v) => { fDes.jefe = v; pintar(); }))),
       el('div', {class: 'graficos'},
-        grafico('Por labor', 'Las 10 labores con más avance.', barrasSuma(sumaPor(filas, (d) => d.labor, (d) => d.avance), 'm', 's-info', (v) => { fDes.labor = v; pintar(); })),
-        grafico('Por contratista', 'Los 10 contratistas con más avance.', barrasSuma(sumaPor(filas, (d) => d.contratista, (d) => d.avance), 'm', 's-info', (v) => { fDes.contratista = v; pintar(); }))),
+        grafico('Por labor', 'Las 10 labores con más avance.', barrasSuma(sumaPor(filas, (d) => d.labor, (d) => d.avance), 'm.l.', 's-info', (v) => { fDes.labor = v; pintar(); })),
+        grafico('Por contratista', 'Los 10 contratistas con más avance.', barrasSuma(sumaPor(filas, (d) => d.contratista, (d) => d.avance), 'm.l.', 's-info', (v) => { fDes.contratista = v; pintar(); }))),
       el('div', {class: 'tarjeta', 'data-v': 'dias'}, el('h2', null, 'Avance teórico de cada día'), el('p', {class: 'nota'}, 'Suma de cada día con los filtros elegidos. El avance de cada registro es su longitud multiplicada por el factor de eficiencia.'),
         tabla([
           {k: 'fecha', t: 'Fecha', nw: true, ver: (x) => verFecha(x.fecha), csv: (x) => verFecha(x.fecha)},
           ...TURNOS.map((t) => ({k: 't' + t, t: 'Turno ' + t, num: true, ord: (x) => x.t[t] || 0, ver: (x) => (x.t[t] ? num(redondea(x.t[t])) : '—')})),
-          {k: 'long', t: 'Longitud (m)', num: true, ver: (x) => num(redondea(x.long))},
-          {k: 'av', t: 'Avance teórico (m)', num: true, ver: (x) => el('b', null, num(redondea(x.av)))},
+          {k: 'long', t: 'Longitud (m.l.)', num: true, ver: (x) => num(redondea(x.long))},
+          {k: 'av', t: 'Avance teórico (m.l.)', num: true, ver: (x) => el('b', null, num(redondea(x.av)))},
           {k: 'n', t: 'Registros', num: true}
         ], [...porDia.values()].sort((a, b) => b.fecha.localeCompare(a.fecha)), {lote: 62})),
       el('div', {class: 'tarjeta', 'data-v': 'detalle'}, el('div', {class: 'cab-tabla'}, el('div', null, el('h2', null, 'Registros de desarrollos'), el('p', {class: 'nota'}, 'Cada fila muestra el cálculo de su avance teórico.')),
@@ -1262,10 +1262,10 @@ const COL_DES = [
   {k: 'contratista', t: 'Contratista'},
   {k: 'TD', x: 1, t: 'TD', num: true},
   {k: 'TP', x: 1, t: 'TP', num: true},
-  {k: 'longitud', t: 'Longitud (m)', num: true, ver: (d) => num(d.longitud)},
+  {k: 'longitud', t: 'Longitud (m.l.)', num: true, ver: (d) => num(d.longitud)},
   {k: 'factor', t: 'Factor de eficiencia', num: true, ver: (d) => num(d.factor)},
   {k: 'calculo', t: 'Cálculo', nw: true, ord: (d) => d.avance, ver: (d) => el('span', {class: 'calc'}, `${num(d.longitud)} × ${num(d.factor)}`), csv: (d) => `${num(d.longitud)} x ${num(d.factor)}`},
-  {k: 'avance', t: 'Avance teórico (m)', num: true, ver: (d) => el('b', null, num(d.avance))},
+  {k: 'avance', t: 'Avance teórico (m.l.)', num: true, ver: (d) => el('b', null, num(d.avance))},
   {k: 'cantidad', x: 1, t: 'Cantidad (cuadros, metros)', num: true, ver: (d) => (d.cantidad ? num(d.cantidad) : '—')},
   {k: 'contrato', x: 1, t: 'Código contrato', nw: true},
   {k: 'Observaciones', t: 'Observaciones'}
@@ -1429,7 +1429,7 @@ function vistaInicio() {
   if (ME) { const p = ME.filter((x) => x.exacto || x.variante), u = ult(p), s = (a) => num(redondea(sumar(a, (x) => x.carros) * FACTOR_TMH));
     c.push(caja('produccion', 'Producción', [dato(s(p.filter((x) => x.fecha === u)), 'TMH', 'el ' + verFecha(u)), dato(s(p.filter((x) => x.fecha.startsWith(mes))), 'TMH', 'en ' + verMes(mes))], 'Ver producción')); } else c.push(caja('produccion', 'Producción', [sin], 'Abrir'));
   if (MD) { const u = ult(MD), s = (a) => num(sumar(a, (x) => x.avance));
-    c.push(caja('desarrollos', 'Desarrollos', [dato(s(MD.filter((x) => x.fecha === u)), 'm', 'avance teórico el ' + verFecha(u)), dato(s(MD.filter((x) => x.fecha.startsWith(mes))), 'm', 'en ' + verMes(mes))], 'Ver avance')); } else c.push(caja('desarrollos', 'Desarrollos', [sin], 'Abrir'));
+    c.push(caja('desarrollos', 'Desarrollos', [dato(s(MD.filter((x) => x.fecha === u)), 'm.l.', 'avance teórico el ' + verFecha(u)), dato(s(MD.filter((x) => x.fecha.startsWith(mes))), 'm.l.', 'en ' + verMes(mes))], 'Ver avance')); } else c.push(caja('desarrollos', 'Desarrollos', [sin], 'Abrir'));
   if (D.personal) { const a = D.personal.filter((p) => p.TipodeLabor || (p.Nivel && p.Nivel !== '-') || p.Turno);
     c.push(caja('personal', 'Personal', [dato(num(a.length), 'personas', 'con nivel, turno o labor'), el('span', {class: 'sub'}, TURNOS.map((t) => t + ': ' + a.filter((p) => p.Turno === t).length).join(' · '))], 'Ver quién está en cada labor')); } else c.push(caja('personal', 'Personal', [sin], 'Abrir'));
   if (M) c.push(caja('polvorin', 'Polvorín', [dato(num(M.vales.filter((v) => v.pendiente).length), 'vales', 'pendientes de despacho'), dato(num(totalAlertas()), 'controles', 'con algo que revisar')], 'Ver polvorín')); else c.push(caja('polvorin', 'Polvorín', [sin], 'Abrir'));
